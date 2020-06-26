@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wayne Oldford and Zehao Xu" />
 
-<meta name="date" content="2020-06-10" />
+<meta name="date" content="2020-06-26" />
 
 <title>Pipes</title>
 
@@ -137,7 +137,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Pipes</h1>
 <h4 class="author">Wayne Oldford and Zehao Xu</h4>
-<h4 class="date">2020-06-10</h4>
+<h4 class="date">2020-06-26</h4>
 
 
 <div id="TOC">
@@ -227,7 +227,7 @@ This connects nicely with <code>ggplot2</code>'s addition <code>+</code> operato
 <div id="using-lggplot" class="section level3">
 <h3>Using <code>lggplot()</code></h3>
 <p>Additionally, using function <code>lggplot</code>, can also create a <code>loon</code> plot with <code>ggplot</code> pipe model.</p>
-<p>The display of <code>ggplot</code> object relies on the default <code>print()</code> function in <code>R</code>. Function <code>lggplot</code>, inserts a new class <code>lggplot</code> into the original <code>ggplot</code> object. At the printing time, <a href="http://adv-r.had.co.nz/S3.html">S3 method</a> <code>print.lggplot()</code> will be executed to transform a <code>ggplot</code> plot to a <code>loon</code> plot.</p>
+<p>The display of <code>ggplot</code> object relies on the default <code>print()</code> function in <code>R</code>. Function <code>l_ggplot</code>, inserts a new class <code>lggplot</code> into the original <code>ggplot</code> object. At the printing time, <a href="http://adv-r.had.co.nz/S3.html">S3 method</a> <code>print.lggplot()</code> will be executed to transform a <code>ggplot</code> plot to a <code>loon</code> plot.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj &lt;-<span class="st"> </span>mtcars <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">transmission =</span> am, <span class="dt">weight =</span> wt) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lp100km =</span> (<span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="fl">3.785411784</span>) <span class="op">/</span><span class="st"> </span>(<span class="fl">1.609344</span> <span class="op">*</span><span class="st"> </span>mpg)) <span class="op">%&gt;%</span>
