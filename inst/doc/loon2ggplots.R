@@ -12,8 +12,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       tidy = FALSE)
 library(knitr)
 set.seed(12314159)
-imageDirectory <- "./img/loon2ggplots"
-dataDirectory <- "./data/loon2ggplots"
+imageDirectory <- "./loon2ggplots"
+dataDirectory <- "./loon2ggplots"
 path_concat <- function(path1, path2, sep="/") {paste(path1, path2, sep = sep)}
 
 library(ggplot2, quietly = TRUE)
@@ -89,48 +89,4 @@ include_graphics(path_concat(imageDirectory, "loon_l_pairs.png"))
 
 ## ----p1_piped_modification_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
 include_graphics(path_concat(imageDirectory, "loon_l_pairs_modification.png"))
-
-## ----glyph_ggplot, message = FALSE, warning = FALSE, eval = FALSE, fig.width = 5, fig.height = 3, fig.align = "center", out.width = "70%"----
-#  library(nycflights13)
-#  library(maps)
-#  destinations <- nycflights13::airports %>%
-#    rename(dest = faa) %>%
-#    semi_join(nycflights13::flights, by = "dest") %>%
-#    filter(lon > -151,
-#           lat < 55)
-#  LA <- data.frame(
-#    lon = -118.243683,
-#    lat = 34.052235
-#  )
-#  map_data("state") %>%
-#    ggplot(aes(long, lat, group = group)) +
-#    geom_polygon(color="black", fill="cornsilk") +
-#    geom_polygonGlyph(data = destinations,
-#                      mapping = aes(x = lon, y = lat),
-#                      inherit.aes = FALSE,
-#                      polygon_x = x_airplane,
-#                      polygon_y = y_airplane,
-#                      size = 2,
-#                      alpha = 0.75,
-#                      fill = "deepskyblue") +
-#    geom_polygonGlyph(data = LA,
-#                      mapping = aes(x = lon, y = lat),
-#                      inherit.aes = FALSE,
-#                      polygon_x = x_star,
-#                      polygon_y = y_star,
-#                      alpha = 0.75,
-#                      fill = "red")
-
-## ----glyph_ggplot_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "map.png"))
-
-## ----serialaxes, message = FALSE, warning = FALSE, eval = FALSE, fig.width = 5, fig.height = 3, fig.align = "center", out.width = "70%"----
-#  # parallel axes plot
-#  ggplot(data = iris,
-#         mapping = aes(colour = Species)) %>%
-#    ggSerialAxes(layout = "parallel") +
-#    theme(axis.text.x = element_text(angle = 30, hjust = 0.7))
-
-## ----serialaxes_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "parallel.png"))
 

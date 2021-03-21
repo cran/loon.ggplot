@@ -15,10 +15,10 @@ l_get_arrangeGrobArgs.l_ggplot <- function(target){
   ylabel <- if (ylabel == "") NULL else ylabel
 
 
-  # is_facet_wrap or is_facet_grid
-  facet <- target$facet %||% list(is_facet_wrap = FALSE, is_facet_grid = FALSE)
-  is_facet_wrap <- facet$is_facet_wrap
-  is_facet_grid <- facet$is_facet_grid
+  # FacetWrap or FacetGrid
+  facet <- target$facet %||% list(FacetWrap = FALSE, FacetGrid = FALSE)
+  FacetWrap <- facet$FacetWrap
+  FacetGrid <- facet$FacetGrid
 
   # title column subtitle or row subtitle
   titles <- target$titles %||% list(title = "", colSubtitles = NULL, rowSubtitles = NULL)
@@ -39,25 +39,28 @@ l_get_arrangeGrobArgs.l_ggplot <- function(target){
     core=list(bg_params = list(fill = "grey90", col=NA))
   )
 
-  if(is_facet_wrap & length(colSubtitles) + length(rowSubtitles) > 0) {
+  if(FacetWrap & length(colSubtitles) + length(rowSubtitles) > 0) {
     subtitle <- c(colSubtitles, rowSubtitles)
     # loon grobs
     lgrobs <- do.call(gList,
-                      lapply(1:nrow,
+                      lapply(seq(nrow),
                              function(i){
                                rowi_columnIds <- which(layout$row == i)
-                               if(length(rowi_columnIds) > 0){
-                                 lgrob <- lapply(rowi_columnIds,
-                                                 function(rowi_columnId){
-                                                   loon::loonGrob(plots[[rowi_columnId]])
-                                                 }
-                                 )
+                               if(length(rowi_columnIds) > 0) {
 
-                                 aGrob <- gridExtra::arrangeGrob(grobs = lgrob,
-                                                                 nrow = 1,
-                                                                 # ncol = ncol,
-                                                                 ncol = length(rowi_columnIds),
-                                                                 name = paste(c("row", i, "arrangeGrob"), collapse = " ")
+                                 aGrob <- gridExtra::arrangeGrob(
+                                   grobs = setNames(
+                                     lapply(rowi_columnIds,
+                                            function(rowi_columnId){
+                                              loon::loonGrob(plots[[rowi_columnId]])
+                                            }
+                                     ),
+                                     as.character(plots[rowi_columnIds])
+                                   ),
+                                   nrow = 1,
+                                   # ncol = ncol,
+                                   ncol = length(rowi_columnIds),
+                                   name = paste(c("row", i, "arrangeGrob"), collapse = " ")
                                  )
 
                                  tG <- gridExtra::tableGrob(matrix(subtitle[rowi_columnIds],
@@ -77,21 +80,25 @@ l_get_arrangeGrobArgs.l_ggplot <- function(target){
       layout_matrix[nrow, ] <- c(rep(nrow, lastRowFacets) , rep(NA, (ncol - lastRowFacets)))
     }
 
-  } else if(is_facet_grid & length(colSubtitles) + length(rowSubtitles) > 0) {
+  } else if(FacetGrid & length(colSubtitles) + length(rowSubtitles) > 0) {
 
     if(facet$byCOLS & !facet$byROWS) {
       # loon grobs
       aGrob <- gridExtra::arrangeGrob(
-        grobs = lapply(plots,
-                       function(plot) {
-                         loon::loonGrob(plot)
-                       }
+        grobs = setNames(
+          lapply(plots,
+                 function(plot) {
+                   loon::loonGrob(plot)
+                 }
+          ),
+          as.character(plots)
         ),
         nrow = 1,
         ncol = length(colSubtitles),
         name = paste(c("byColumn", "arrangeGrob"), collapse = " ")
       )
-      tG <- gridExtra::tableGrob(matrix(colSubtitles, ncol = length(colSubtitles)), theme = tt)
+      tG <- gridExtra::tableGrob(matrix(colSubtitles, ncol = length(colSubtitles)),
+                                 theme = tt)
 
       lgrobs <- gList(
         rbind(tG, aGrob, size = "last")
@@ -100,16 +107,20 @@ l_get_arrangeGrobArgs.l_ggplot <- function(target){
     } else if(!facet$byCOLS & facet$byROWS) {
       # loon grobs
       aGrob <- gridExtra::arrangeGrob(
-        grobs = lapply(plots,
-                       function(plot) {
-                         loon::loonGrob(plot)
-                       }
-        ),
+        grobs = setNames(
+          lapply(plots,
+                 function(plot) {
+                   loon::loonGrob(plot)
+                 }
+          ),
+          as.character(plots)
+        ) ,
         nrow = length(rowSubtitles),
         ncol = 1,
         name = paste(c("byRow", "arrangeGrob"), collapse = " ")
       )
-      tG <- gridExtra::tableGrob(matrix(rowSubtitles, nrow = length(rowSubtitles)), theme = tt)
+      tG <- gridExtra::tableGrob(matrix(rowSubtitles, nrow = length(rowSubtitles)),
+                                 theme = tt)
 
       lgrobs <- gList(
         cbind(aGrob, tG, size = "first")
@@ -119,18 +130,22 @@ l_get_arrangeGrobArgs.l_ggplot <- function(target){
       uniqueColSubtitles <- unique(colSubtitles)
       uniqueRowSubtitles <- unique(rowSubtitles)
       aGrob <- gridExtra::arrangeGrob(
-        grobs = lapply(plots,
-                       function(plot) {
-                         loon::loonGrob(plot)
-                       }
+        grobs = setNames(
+          lapply(plots,
+                 function(plot) {
+                   loon::loonGrob(plot)
+                 }
+          ), as.character(plots)
         ),
         nrow = length(uniqueRowSubtitles),
         ncol = length(uniqueColSubtitles),
         name = paste(c("byRow", "byColumn", "arrangeGrob"), collapse = " ")
       )
 
-      tG_row <- gridExtra::tableGrob(matrix(uniqueRowSubtitles, nrow = length(uniqueRowSubtitles)), theme = tt)
+      tG_row <- gridExtra::tableGrob(matrix(uniqueRowSubtitles, nrow = length(uniqueRowSubtitles)),
+                                     theme = tt)
       lgrobs_row <- cbind(aGrob, tG_row, size = "first")
+
       tG_col <- gridExtra::tableGrob(
         matrix(c(uniqueColSubtitles, ""),
                ncol = length(uniqueColSubtitles) + 1),
@@ -145,12 +160,6 @@ l_get_arrangeGrobArgs.l_ggplot <- function(target){
     layout_matrix <- matrix(1, nrow = 1, ncol = 1)
 
   } else {
-    # loon grobs
-    lgrobs <- lapply(plots,
-                     function(plot) {
-                       loon::loonGrob(plot)
-                     }
-    )
 
     # layout matrix
     layout_matrix <- matrix(rep(NA, nrow * ncol), nrow = nrow)
@@ -165,6 +174,14 @@ l_get_arrangeGrobArgs.l_ggplot <- function(target){
     xlabel <- if(length(plots) == 1) {
       if(plots$x1y1['showLabels']) NULL else xlabel
     } else NULL
+
+    lgrobs <- setNames(
+      lapply(plots,
+             function(plot) {
+               loon::loonGrob(plot)
+             }
+      ), as.character(plots)
+    )
   }
 
   list(

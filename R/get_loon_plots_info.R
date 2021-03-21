@@ -1,33 +1,32 @@
-get_loon_plots_info <- function(plots_info = list(),
-                                ggObj,
-                                parent = NULL,
-                                activeGeomLayers = integer(0),
-                                ggGuides = FALSE,
-                                pack = FALSE,
-                                tkLabels = NULL,
-                                canvasHeight = 700,
-                                canvasWidth = 850) {
+get_loon_plotInfo <- function(plotInfo = list(),
+                              ggObj,
+                              parent = NULL,
+                              activeGeomLayers = integer(0),
+                              ggGuides = FALSE,
+                              pack = FALSE,
+                              tkLabels = NULL,
+                              canvasHeight = 700,
+                              canvasWidth = 850) {
 
-  buildggObj <- plots_info$buildggObj
-  args <- plots_info$args
-
+  buildggObj <- plotInfo$buildggObj
+  args <- plotInfo$args
 
   # ggplot object
   dataFrame <- ggObj$data
-  linkingKey <- plots_info$linkingKey
-  itemLabel <- plots_info$itemLabel
+  linkingKey <- plotInfo$linkingKey
+  itemLabel <- plotInfo$itemLabel
+  # is serialaxes coord?
+  isCoordSerialaxes <- plotInfo$isCoordSerialaxes
 
-  # ggbuild
-  ggBuild <- buildggObj$ggBuild
   layout <- buildggObj$layout
-  ggplotPanel_params <- buildggObj$ggplotPanel_params
+  ggplotPanelParams <- buildggObj$ggplotPanelParams
   panelNum <- dim(layout)[1]
 
   # facet and location
-  span <- plots_info$span
-  start.ypos <- plots_info$start.ypos
-  start.xpos <- plots_info$start.xpos
-  start.subtitlepos <- plots_info$start.subtitlepos
+  span <- plotInfo$span
+  start.ypos <- plotInfo$start.ypos
+  start.xpos <- plotInfo$start.xpos
+  start.subtitlepos <- plotInfo$start.subtitlepos
   newspan <- span
 
   # loon setting
@@ -44,298 +43,214 @@ get_loon_plots_info <- function(plots_info = list(),
     args[['zoomY']]
   }
   # labels
-  xlabel <- plots_info$xlabel
-  ylabel <- plots_info$ylabel
-  title <- plots_info$title
-  colSubtitles <- c()
-  rowSubtitles <- c()
+  xlabel <- plotInfo$xlabel
+  ylabel <- plotInfo$ylabel
+  title <- plotInfo$title
 
   # length layers
-  len_layers <- length(ggObj$layers)
+  lenLayers <- length(ggObj$layers)
 
-  plots <- lapply(seq_len(panelNum),
-                  function(i){
-                    # subtitle
-                    # if wrap number is larger than 0, multiple facets are displayed
-                    numOfSubtitles <- wrap_num(buildggObj$ggLayout,
-                                               plots_info$is_facet_wrap,
-                                               plots_info$is_facet_grid,
-                                               tkLabels)
+  # initial settings
+  colSubtitles <- c()
+  rowSubtitles <- c()
+  indices <- list()
+  plots <- list()
+  # is polar coord?
+  isCoordPolar <- is.CoordPolar(ggObj$coordinates)
 
-                    subtitle <- get_subtitle(plots_info$layoutByROWS,
-                                             plots_info$layoutByCOLS,
-                                             layout = layout,
-                                             ggLayout = buildggObj$ggLayout,
-                                             numOfSubtitles = numOfSubtitles,
-                                             byROWS = plots_info$byROWS,
-                                             byCOLS = plots_info$byCOLS,
-                                             panelNum = i,
-                                             is_facet_wrap = plots_info$is_facet_wrap,
-                                             is_facet_grid = plots_info$is_facet_grid,
-                                             tkLabels = tkLabels)
-                    colSubtitle <- subtitle$colSubtitle
-                    rowSubtitle <- subtitle$rowSubtitle
-                    colSubtitles <<- c(colSubtitles, colSubtitle)
-                    rowSubtitles <<- c(rowSubtitles, rowSubtitle)
+  # subtitle
+  # if wrap number is larger than 0, multiple facets are displayed
+  numOfSubtitles <- wrap_num(buildggObj$ggLayout,
+                             plotInfo$FacetWrap,
+                             plotInfo$FacetGrid,
+                             tkLabels)
 
-                    if(!is.null(colSubtitle) & !plots_info$is_facet_grid & tkLabels & pack) {
-                      sub <- as.character(tcltk::tcl('label',
-                                                     as.character(loon::l_subwin(parent,'label')),
-                                                     text= colSubtitle, background = "grey90"))
-                      tcltk::tkgrid(sub,
-                                    row = (layout[i,]$ROW - 1) * span + start.ypos,
-                                    column = (layout[i,]$COL - 1) * span + start.xpos,
-                                    rowspan = numOfSubtitles,
-                                    columnspan = span,
-                                    sticky="nesw")
-                      start.subtitlepos <<- start.ypos + numOfSubtitles
-                      newspan <- span - numOfSubtitles
-                      if(newspan <= 0) stop(paste0("pick a larger span, at least larger than ", numOfSubtitles), call. = FALSE)
-                    }
+  for(i in seq_len(panelNum)) {
 
-                    # is polar coord?
-                    isCoordPolar <- is.CoordPolar(ggplotPanel_params[[i]])
+    subtitle <- get_subtitle(plotInfo$layoutByROWS,
+                             plotInfo$layoutByCOLS,
+                             layout = layout,
+                             ggLayout = buildggObj$ggLayout,
+                             numOfSubtitles = numOfSubtitles,
+                             byROWS = plotInfo$byROWS,
+                             byCOLS = plotInfo$byCOLS,
+                             panelNum = i,
+                             FacetWrap = plotInfo$FacetWrap,
+                             FacetGrid = plotInfo$FacetGrid,
+                             tkLabels = tkLabels)
+    colSubtitle <- subtitle$colSubtitle
+    rowSubtitle <- subtitle$rowSubtitle
+    colSubtitles <- c(colSubtitles, colSubtitle)
+    rowSubtitles <- c(rowSubtitles, rowSubtitle)
 
-                    if(isCoordPolar){
-                      # theta can be only "x" or "y"
-                      if(ggObj$coordinates$theta == "y")  swapAxes <<- TRUE
-                      showGuides <- FALSE
-                      showScales <- FALSE
-                    } else {
-                      # if not polar coord
-                      # swap or not
-                      if( which( names(ggplotPanel_params[[i]]) %in% "y.range"  == TRUE ) <
-                          which( names(ggplotPanel_params[[i]]) %in% "x.range"  == TRUE ) ) swapAxes <<- TRUE
-                      # show ggGuides or not
-                      if (ggGuides) {
-                        showGuides <- FALSE
-                        showScales <- FALSE
+    if(!is.null(colSubtitle) & !plotInfo$FacetGrid & tkLabels & pack) {
+      sub <- as.character(tcltk::tcl('label',
+                                     as.character(loon::l_subwin(parent,'label')),
+                                     text= colSubtitle,
+                                     bg = set_tkLabel()$labelBackground,
+                                     fg = set_tkLabel()$labelForeground,
+                                     borderwidth = set_tkLabel()$labelBorderwidth,
+                                     relief = set_tkLabel()$labelRelief))
+      tcltk::tkgrid(sub,
+                    row = (layout[i,]$ROW - 1) * span + start.ypos,
+                    column = (layout[i,]$COL - 1) * span + start.xpos,
+                    rowspan = numOfSubtitles,
+                    columnspan = span,
+                    sticky="nesw")
+      start.subtitlepos <- start.ypos + numOfSubtitles
+      newspan <- span - numOfSubtitles
+      if(newspan <= 0) stop("pick a larger span, at least larger than ", numOfSubtitles, call. = FALSE)
+    }
 
-                      } else {
-                        # set panX, panY, deltaX, deltaY
-                        showGuides <- TRUE
-                        showScales <- get_showScales(ggObj$theme)
-                        x.range <- if (swapAxes) {
-                          ggplotPanel_params[[i]]$y.range
-                        } else {
-                          ggplotPanel_params[[i]]$x.range
-                        }
-                        y.range <- if (swapAxes) {
-                          ggplotPanel_params[[i]]$x.range
-                        } else {
-                          ggplotPanel_params[[i]]$y.range
-                        }
-                        panY <- y.range[1]
-                        panX <- x.range[1]
-                        deltaY <- diff(y.range) * zoomX
-                        deltaX <- diff(x.range) * zoomY
-                      }
-                    }
+    if(isCoordPolar) {
+      # theta can be only "x" or "y"
+      theta <- ggObj$coordinates$theta %||% "x"
+      if(theta == "y")  swapAxes <- TRUE
+      showGuides <- FALSE
+      showScales <- FALSE
+    } else {
+      # if not polar coord
+      # swap or not
+      swapAxes <- is.CoordFlip(ggObj$coordinates)
+      # show ggGuides or not
+      if (ggGuides) {
+        showGuides <- FALSE
+        showScales <- FALSE
 
-                    loonTitle <- paste(c(title,
-                                         colSubtitle,
-                                         rowSubtitle), collapse = "\n")
+      } else {
+        # set panX, panY, deltaX, deltaY
+        showGuides <- TRUE
+        showScales <- get_showScales(ggObj$theme)
+        x.range <- plot_range("x.range", ggplotPanelParams[[i]], swapAxes)
+        y.range <- plot_range("y.range", ggplotPanelParams[[i]], swapAxes)
 
-                    if (len_layers > 0) {
-                      importantLayers <- get_importantLayers(len_layers, ggObj, isCoordPolar)
+        panY <- y.range[1]
+        panX <- x.range[1]
+        deltaY <- diff(y.range) * zoomX
+        deltaX <- diff(x.range) * zoomY
+      }
+    }
 
-                      boxplotLayers <- importantLayers$boxplotLayers
-                      curveLayers <- importantLayers$curveLayers
+    loonTitle <- paste(c(title,
+                         colSubtitle,
+                         rowSubtitle), collapse = "\n")
 
-                      # set active geom layer and active model
-                      activeInfo <- get_activeInfo(importantLayers, activeGeomLayers, len_layers)
-                      activeGeomLayers <- activeInfo$activeGeomLayers
-                      activeModel <- activeInfo$activeModel
+    if (lenLayers > 0 && all(activeGeomLayers > 0)) {
 
-                      # boxplot has a hidden scatterplot model layer
-                      boxplot_point_layers <- c(boxplotLayers, activeGeomLayers)
+      modelLayers <- get_modelLayers(lenLayers, ggObj, isCoordPolar, isCoordSerialaxes)
 
-                      if (is.data.frame(dataFrame) & !"waiver" %in% class(dataFrame)) {
-                        mapping <- ggObj$mapping
-                      } else {
-                        if(length(activeGeomLayers) == 1) {
-                          dataFrame <- ggObj$layers[[activeGeomLayers]]$data
-                          linkingKey <- loonLinkingKey(dataFrame, args)
-                          itemLabel <- loonItemLabel(dataFrame, args)
+      # set active geom layer and active model
+      activeInfo <- get_activeInfo(modelLayers, activeGeomLayers, lenLayers)
 
-                          mapping <- ggObj$layers[[activeGeomLayers]]$mapping
-                        } else NULL # activeGeomLayers > 1 not implemented so far
-                      }
+      index <- l_indices(ggObj = ggObj,
+                         panelIndex = i, args = args, plotInfo = plotInfo,
+                         numOfSubtitles = numOfSubtitles,  activeInfo = activeInfo,
+                         modelLayers = modelLayers)
 
-                      if (activeModel == "l_hist" & length(activeGeomLayers) != 0) {
-                        loonPlot <- loonHistogram(ggBuild = ggBuild,
-                                                  ggLayout = buildggObj$ggLayout,
-                                                  layout = layout,
-                                                  ggplotPanel_params = ggplotPanel_params,
-                                                  ggObj = ggObj,
-                                                  activeGeomLayers = activeGeomLayers,
-                                                  panelIndex = i,
-                                                  dataFrame = dataFrame,
-                                                  mapping = mapping,
-                                                  numOfSubtitles = numOfSubtitles,
-                                                  parent = parent,
-                                                  showGuides = showGuides,
-                                                  showScales = showScales,
-                                                  swapAxes = swapAxes,
-                                                  linkingKey = linkingKey,
-                                                  showLabels = plots_info$showLabels,
-                                                  xlabel = xlabel,
-                                                  ylabel = ylabel,
-                                                  loonTitle = loonTitle,
-                                                  is_facet_wrap = plots_info$is_facet_wrap,
-                                                  is_facet_grid = plots_info$is_facet_grid)
+      # update indicies
+      indices[[i]] <- index
 
+      loonPlot <- l_loonPlot(ggObj = ggObj,
+                             panelIndex = i, args = args, plotInfo = plotInfo,
+                             numOfSubtitles = numOfSubtitles, activeInfo = activeInfo,
+                             modelLayers = modelLayers, index = index,
+                             parent = parent, showGuides = showGuides, showScales = showScales,
+                             swapAxes = swapAxes, xlabel = xlabel, ylabel = ylabel,
+                             loonTitle = loonTitle)
 
-                      } else if(activeModel == "l_plot" & length(boxplot_point_layers) != 0) {
-                        loonPlot <- loonScatter(ggBuild = ggBuild,
-                                                ggObj = ggObj,
-                                                ggplotPanel_params = ggplotPanel_params,
-                                                panelIndex = i,
-                                                mapping = mapping,
-                                                dataFrame = dataFrame,
-                                                activeGeomLayers = activeGeomLayers,
-                                                isCoordPolar = isCoordPolar,
-                                                parent = parent,
-                                                showGuides = showGuides,
-                                                showScales = showScales,
-                                                swapAxes = swapAxes,
-                                                linkingKey = linkingKey,
-                                                itemLabel = itemLabel,
-                                                showLabels = plots_info$showLabels,
-                                                xlabel = xlabel,
-                                                ylabel = ylabel,
-                                                loonTitle = loonTitle)
+    } else {
 
-                      } else {
-                        loonPlot <- loon::l_plot(parent = parent,
-                                                 showGuides = showGuides,
-                                                 showScales = showScales,
-                                                 showLabels = plots_info$showLabels,
-                                                 swapAxes = swapAxes,
-                                                 xlabel = if(is.null(xlabel)) "" else xlabel,
-                                                 ylabel = if(is.null(ylabel)) "" else ylabel,
-                                                 title = loonTitle)
+      modelLayers <- list()
+      activeInfo <- list()
 
-                      }
-                      # adding layers
-                      loon_layers <- lapply(seq_len(len_layers),
-                                            function(j){
-                                              if(! j %in% activeGeomLayers){
-                                                loonLayer(widget = loonPlot,
-                                                          layerGeom = ggObj$layers[[j]],
-                                                          data =  ggBuild$data[[j]][ggBuild$data[[j]]$PANEL == i, ],
-                                                          ggplotPanel_params = ggplotPanel_params[[i]],
-                                                          ggObj = ggObj,
-                                                          special = list(curve = list(which_curve = j,
-                                                                                      curveLayers = curveLayers))
-                                                )
-                                              }
-                                            })
+      activeInfo$activeGeomLayers <- activeGeomLayers
+      activeInfo$activeModel <- "l_plot"
 
-                      # recover the points or histogram layer to the original position
-                      if(length(activeGeomLayers) != len_layers & length(activeGeomLayers) != 0) {
-                        otherLayerId <- (1:len_layers)[-activeGeomLayers]
-                        minOtherLayerId <- min(otherLayerId)
-                        max_hist_points_layerId <- max(activeGeomLayers)
+      loonPlot <- loon::l_plot(parent = parent,
+                               showGuides = showGuides,
+                               showScales = showScales,
+                               showLabels = plotInfo$showLabels,
+                               swapAxes = swapAxes,
+                               xlabel = if(is.null(xlabel)) "" else xlabel,
+                               ylabel = if(is.null(ylabel)) "" else ylabel,
+                               title = loonTitle)
+    }
 
-                        if(max_hist_points_layerId > minOtherLayerId){
-                          modelLayerup <- sapply(seq_len(length(which(otherLayerId < max_hist_points_layerId) == TRUE)),
-                                                 function(j){
-                                                   loon::l_layer_raise(loonPlot, "model")
-                                                 }
-                          )
-                        }
-                      }
+    pack_layers(loonPlot = loonPlot, ggObj = ggObj, buildggObj = buildggObj,
+                panelIndex = i, activeInfo = activeInfo, modelLayers = modelLayers)
 
-                      # special case
-                      if (length(boxplotLayers) != 0 & activeModel == "l_plot" & length(activeGeomLayers) == 0) {
-                        # hidden points layer
-                        loon::l_layer_hide(loonPlot, "model")
-                        # move the hidden layer on the top
-                        modelLayerup <- sapply(seq_len(len_layers),
-                                               function(j){
-                                                 loon::l_layer_raise(loonPlot, "model")
-                                               })
-                      }
+    # resize loon plot
+    if(pack) {
 
-                    } else loonPlot <- loon::l_plot(parent = parent,
-                                                    showGuides = showGuides,
-                                                    showScales = showScales,
-                                                    showLabels = plots_info$showLabels,
-                                                    swapAxes = swapAxes,
-                                                    xlabel = if(is.null(xlabel)) "" else xlabel,
-                                                    ylabel = if(is.null(ylabel)) "" else ylabel,
-                                                    title = loonTitle)
+      tcltk::tkconfigure(paste(loonPlot,'.canvas',sep=''),
+                         width = canvasWidth/plotInfo$column,
+                         height = canvasHeight/plotInfo$row)
+      # tk pack
+      row.start <- (layout[i,]$ROW - 1) * span + start.subtitlepos
+      col.start <- (layout[i,]$COL - 1) * span + start.xpos
 
-                    # resize loon plot
-                    if(pack) {
+      tcltk::tkgrid(loonPlot,
+                    row = row.start,
+                    column= col.start,
+                    rowspan = newspan,
+                    columnspan = span,
+                    sticky="nesw")
+      # facet wrap will have multiple column names
+      for (j in row.start:(row.start + newspan - 1)) {
+        tcltk::tkgrid.rowconfigure(parent, j, weight=1)
+      }
+      for(j in col.start:(col.start + span - 1)) {
+        tcltk::tkgrid.columnconfigure(parent, j, weight=1)
+      }
+    }
 
-                      tcltk::tkconfigure(paste(loonPlot,'.canvas',sep=''),
-                                         width = canvasWidth/plots_info$column,
-                                         height = canvasHeight/plots_info$row)
-                      # tk pack
-                      row.start <- (layout[i,]$ROW - 1) * span + start.subtitlepos
-                      col.start <- (layout[i,]$COL - 1) * span + start.xpos
+    if(!isCoordSerialaxes) {
+      ## After version 3.3.0, ggplot has a significant change.
+      ## In the past
+      ## p <- ggplot(mtcars, aes(y = hp)) +
+      ##        geom_histogram()
+      ## this would not work (give an error).
+      ## However, after version 3.3.0
+      ## this will produce a swapAxes histogram
+      ## In other words, if we want to flip a histogram,
+      ## rather than pipe through function `coord_flip()`
+      ## we can set mapping systems as `aes(y = variable)`.
+      if(loonPlot['swapAxes'] != swapAxes) {
+        # the situation we described before happens
+        swapAxes <- loonPlot['swapAxes']
 
-                      tcltk::tkgrid(loonPlot,
-                                    row = row.start,
-                                    column= col.start,
-                                    rowspan = newspan,
-                                    columnspan = span,
-                                    sticky="nesw")
-                      # facet wrap will have multiple column names
-                      for (j in row.start:(row.start + newspan - 1)) {
-                        tcltk::tkgrid.rowconfigure(parent, j, weight=1)
-                      }
-                      for(j in col.start:(col.start + span - 1)) {
-                        tcltk::tkgrid.columnconfigure(parent, j, weight=1)
-                      }
-                    }
+        if(!isCoordPolar && !ggGuides) {
+          temp <- panX
+          panX <- panY
+          panY <- temp
 
-                    ## After version 3.3.0, ggplot has a significant change.
-                    ## In the past
-                    ## p <- ggplot(mtcars, aes(y = hp)) +
-                    ##        geom_histogram()
-                    ## this would not work (give an error).
-                    ## However, after version 3.3.0
-                    ## this will produce a swapAxes histogram
-                    ## In other words, if we want to flip a histogram,
-                    ## rather than pipe through function `coord_flip()`
-                    ## we can set mapping systems as `aes(y = variable)`.
-                    if(loonPlot['swapAxes'] != swapAxes) {
-                      # the situation we described before happens
-                      swapAxes <- loonPlot['swapAxes']
+          temp <- zoomX
+          zoomX <- zoomY
+          zoomY <- temp
 
-                      if(!isCoordPolar && !ggGuides) {
-                        temp <- panX
-                        panX <- panY
-                        panY <- temp
+          temp <- deltaX
+          deltaX <- deltaY
+          deltaY <- temp
+        }
+      }
+      # loonPlot_configure does not produce anything but just configure the loon plot
+      loonPlot_configure(isCoordPolar = isCoordPolar,
+                         loonPlot = loonPlot,
+                         ggGuides = ggGuides,
+                         panelIndex = i,
+                         ggplotPanelParams = ggplotPanelParams,
+                         swapAxes = swapAxes,
+                         theme = ggObj$theme,
+                         panX=panX,
+                         panY=panY,
+                         deltaX= deltaX,
+                         deltaY=deltaY,
+                         zoomX = zoomX,
+                         zoomY = zoomY)
+    }
 
-                        temp <- zoomX
-                        zoomX <- zoomY
-                        zoomY <- temp
-
-                        temp <- deltaX
-                        deltaX <- deltaY
-                        deltaY <- temp
-                      }
-                    }
-                    # loonPlot_configure does not produce anything but just configure the loon plot
-                    loonPlot_configure <- loonPlot_configure(isCoordPolar = isCoordPolar,
-                                                             loonPlot = loonPlot,
-                                                             ggGuides = ggGuides,
-                                                             panelIndex = i,
-                                                             ggplotPanel_params = ggplotPanel_params,
-                                                             swapAxes = swapAxes,
-                                                             theme = ggObj$theme,
-                                                             panX=panX,
-                                                             panY=panY,
-                                                             deltaX= deltaX,
-                                                             deltaY=deltaY,
-                                                             zoomX = zoomX,
-                                                             zoomY = zoomY)
-                    loonPlot
-                  })
+    plots[[i]] <- loonPlot
+  }
 
   names(plots) <- sapply(
     seq_len(panelNum),
@@ -349,15 +264,14 @@ get_loon_plots_info <- function(plots_info = list(),
     }
   )
 
-  return(
-    list(
-      plots = plots,
-      display_info = list(
-        colSubtitles = colSubtitles,
-        rowSubtitles = rowSubtitles,
-        start.subtitlepos = start.subtitlepos,
-        swapAxes = swapAxes
-      )
+  list(
+    plots = plots,
+    indices = indices,
+    display_info = list(
+      colSubtitles = colSubtitles,
+      rowSubtitles = rowSubtitles,
+      start.subtitlepos = start.subtitlepos,
+      swapAxes = swapAxes
     )
   )
 }

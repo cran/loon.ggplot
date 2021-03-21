@@ -1,67 +1,125 @@
-get_importantLayers <- function(len_layers, ggObj, isCoordPolar){
+get_modelLayers <- function(len_layers, ggObj, isCoordPolar = FALSE, isCoordSerialaxes = FALSE) {
+
   layerNames <- lapply(seq_len(len_layers),
                        function(j) {
                          className <- class(ggObj$layers[[j]]$geom)
                          className[-which(className %in% c("ggproto"  ,"gg" ,"Geom"))]
                        })
 
+  if(length(layerNames) == 0)
+    return(
+      list(pointLayers = numeric(0L),
+           histogramLayers = numeric(0L),
+           boxplotLayers = numeric(0L),
+           curveLayers = numeric(0L),
+           serialaxesLayers = numeric(0L))
+    )
+
+  # check the coord
+  if(isCoordSerialaxes) {
+    serialaxesLayers <- which(
+      sapply(layerNames,
+             function(layerName) {
+               (length(layerName) == 1) && (("GeomPath" %in% layerName) || ("GeomRibbon" %in% layerName))
+             })
+    )
+
+    if(length(serialaxesLayers) > 1) {
+      warning("Only one layer can be active in serialaxes. The first layer will be picked by default", call. = FALSE)
+      serialaxesLayers <- serialaxesLayers[1]
+    }
+
+    return(list(pointLayers = numeric(0L),
+                histogramLayers = numeric(0L),
+                boxplotLayers = numeric(0L),
+                curveLayers = numeric(0L),
+                serialaxesLayers = serialaxesLayers))
+  }
+
   # take the point layer as l_plot
-  pointLayers <- which(sapply(layerNames,
-                              function(layerName){
-                                "GeomPoint" %in% layerName
-                              }) == TRUE
+  pointLayers <- which(
+    sapply(layerNames,
+           function(layerName){
+             any(layerName %in% c("GeomPoint", "GeomPolygonGlyph",
+                                  "GeomText", "GeomTextGlyph",
+                                  "GeomPointrange", "GeomPointrangeGlyph",
+                                  "GeomImageGlyph", "GeomSerialAxesGlyph"))
+           })
   )
 
-  histogramLayers <- which(sapply(layerNames,
-                                  function(layerName){
-                                    if("GeomBar" %in% layerName) {
-                                      if(isCoordPolar) {
-                                        warning("loon `l_hist` is built based on Cartesian coordinate system\n and does not accommodate polar coordinate system yet. \n If polar coords are used, the histograms or bar plots \n will be created as static polygons and will **not** be interactive.", call. = FALSE)
-                                        FALSE
-                                      } else TRUE
-                                    } else FALSE
-                                  }) == TRUE
+  histogramLayers <- which(
+    sapply(layerNames,
+           function(layerName){
+             if("GeomBar" %in% layerName) {
+               if(isCoordPolar) {
+                 warning("loon `l_hist` is built based on Cartesian coordinate system ",
+                 "and does not accommodate polar coordinate system yet. ",
+                 "If polar coords are used, the histograms or bar plots ",
+                 "will be created as static polygons and will **not** be interactive." , call. = FALSE)
+
+                 FALSE
+               } else TRUE
+               # TODO `l_hist` only accommodate one dimensional histogram
+               # "GeomBar_" would not be interactive
+               if("GeomBar_" %in% layerName) {
+                 warning("If `GeomBar_` object is called, the histograms or bar plots ",
+                 "will be created as static polygons and will **not** be interactive.", call. = FALSE)
+                 FALSE
+               } else TRUE
+             } else FALSE
+           })
   )
 
   # boxlayer
   boxplotLayers <- which(sapply(layerNames,
                                 function(layerName){
                                   "GeomBoxplot" %in% layerName
-                                }) == TRUE
+                                })
   )
 
   # curvelayer
   curveLayers <- which(sapply(layerNames,
                               function(layerName){
                                 "GeomCurve" %in% layerName
-                              }) == TRUE
+                              })
   )
   list(pointLayers = pointLayers,
        histogramLayers = histogramLayers,
        boxplotLayers = boxplotLayers,
-       curveLayers = curveLayers)
+       curveLayers = curveLayers,
+       serialaxesLayers = numeric(0L))
 }
 
-get_activeInfo <- function(importantLayers, activeGeomLayers, len_layers){
+get_activeInfo <- function(modelLayers, activeGeomLayers, len_layers){
 
-  pointLayers <- importantLayers$pointLayers
-  histogramLayers <- importantLayers$histogramLayers
-  boxplotLayers <- importantLayers$boxplotLayers
+  pointLayers <- modelLayers$pointLayers
+  histogramLayers <- modelLayers$histogramLayers
+  serialaxesLayers <- modelLayers$serialaxesLayers
+
+  boxplotLayers <- modelLayers$boxplotLayers
 
   point_hist_layers <- c(pointLayers, histogramLayers)
+
   if (length(activeGeomLayers) == 0) {
-    if(length(point_hist_layers) != 0) {
-      activeGeomLayers <- min(point_hist_layers)
-      activeModel <- if(activeGeomLayers %in% pointLayers) "l_plot" else "l_hist"
+    if(length(c(point_hist_layers, serialaxesLayers)) > 0) {
+      activeGeomLayers <- if(length(serialaxesLayers) > 0) serialaxesLayers else min(point_hist_layers)
+      activeModel <- if (activeGeomLayers %in% serialaxesLayers) {
+        "l_serialaxes"
+      } else if(activeGeomLayers %in% pointLayers)
+        "l_plot"
+      else "l_hist"
     } else {
       activeModel <- "l_plot"
     }
   } else {
-    if(max(activeGeomLayers) > len_layers)
+    if(max(activeGeomLayers, na.rm = TRUE) > len_layers)
       stop("the activeGeomLayers is out of bound", call. = FALSE)
-    canBeActive <- activeGeomLayers %in% c(point_hist_layers, boxplotLayers)
+    canBeActive <- activeGeomLayers %in% c(point_hist_layers, serialaxesLayers, boxplotLayers)
     if(all(canBeActive)) {
-      if(all(activeGeomLayers %in% pointLayers)) { # all point layers?
+
+      if(all(activeGeomLayers %in% serialaxesLayers)) {
+        activeModel <- "l_serialaxes"
+      } else if(all(activeGeomLayers %in% pointLayers)) { # all point layers?
         activeModel <- "l_plot"
       } else if(all(activeGeomLayers %in% histogramLayers)) { # all histogram layers?
         activeModel <- "l_hist"
@@ -89,8 +147,8 @@ get_activeInfo <- function(importantLayers, activeGeomLayers, len_layers){
 }
 
 get_subtitle <- function(layoutByROWS, layoutByCOLS, layout, ggLayout, numOfSubtitles,
-                         byROWS, byCOLS ,panelNum, is_facet_wrap, is_facet_grid, tkLabels){
-  if(is_facet_wrap | !tkLabels) {
+                         byROWS, byCOLS ,panelNum, FacetWrap, FacetGrid, tkLabels){
+  if(FacetWrap | !tkLabels) {
     colSubtitle <- if (numOfSubtitles > 0) {
       paste(
         sapply(
@@ -101,7 +159,7 @@ get_subtitle <- function(layoutByROWS, layoutByCOLS, layout, ggLayout, numOfSubt
       )
     } else NULL
     rowSubtitle <- NULL
-  } else if(is_facet_grid) {
+  } else if(FacetGrid) {
     if(byROWS & !byCOLS) {
       rowSubtitle <- paste(sapply(layout[panelNum, layoutByROWS], as.character), collapse = "\n")
       colSubtitle <- NULL

@@ -1,20 +1,18 @@
-#' @importFrom dplyr group_by summarise n
-
-loonHistogram <- function(ggBuild, ggLayout, layout, ggplotPanel_params, ggObj,
-                          activeGeomLayers, panelIndex, dataFrame, mapping, numOfSubtitles,
-                          parent, showGuides, showScales, swapAxes, linkingKey, showLabels,
-                          xlabel, ylabel, loonTitle, is_facet_wrap, is_facet_grid) {
+l_histogram <- function(ggBuild, ggLayout, layout, ggplotPanelParams, ggObj,
+                        activeGeomLayers, panelIndex, dataFrame, mapping, numOfSubtitles,
+                        parent, showGuides, showScales, swapAxes, linkingKey, showLabels,
+                        xlabel, ylabel, loonTitle, FacetWrap, FacetGrid) {
   x <- ggObj$layers[[activeGeomLayers]]$stat
-  UseMethod("loonHistogram", x)
+  UseMethod("l_histogram", x)
 }
 
 
 
-loonHistogram.StatBin <- function(ggBuild, ggLayout, layout, ggplotPanel_params, ggObj,
-                                  activeGeomLayers, panelIndex, dataFrame,
-                                  mapping, numOfSubtitles,
-                                  parent, showGuides, showScales, swapAxes, linkingKey, showLabels,
-                                  xlabel, ylabel, loonTitle, is_facet_wrap, is_facet_grid) {
+l_histogram.StatBin <- function(ggBuild, ggLayout, layout, ggplotPanelParams, ggObj,
+                                activeGeomLayers, panelIndex, dataFrame,
+                                mapping, numOfSubtitles,
+                                parent, showGuides, showScales, swapAxes, linkingKey, showLabels,
+                                xlabel, ylabel, loonTitle, FacetWrap, FacetGrid) {
 
   # set binwidth
   ## panel i hist values
@@ -36,7 +34,7 @@ loonHistogram.StatBin <- function(ggBuild, ggLayout, layout, ggplotPanel_params,
     hist_x <- as.numeric(rlang::eval_tidy(rlang::quo(!!mapping$x),  dataFrame))
   }
   # facet index
-  facet_id <- catch_facet_id(numOfSubtitles, hist_x, is_facet_wrap, is_facet_grid,
+  facet_id <- catch_facet_id(numOfSubtitles, hist_x, FacetWrap, FacetGrid,
                              layout, ggLayout, panelIndex, dataFrame)
   hist_values <- hist_x[facet_id]
 
@@ -48,7 +46,7 @@ loonHistogram.StatBin <- function(ggBuild, ggLayout, layout, ggplotPanel_params,
                              facet_id, in_limits, dataFrame, ggObj,
                              activeGeomLayers,
                              panelIndex = panelIndex,
-                             ggplotPanel_params = ggplotPanel_params,
+                             ggplotPanelParams = ggplotPanelParams,
                              binwidth = binwidth)
 
   hist_values <- bin_info$hist_values
@@ -94,11 +92,11 @@ loonHistogram.StatBin <- function(ggBuild, ggLayout, layout, ggplotPanel_params,
                title = loonTitle)
 }
 
-loonHistogram.StatCount <- function(ggBuild, ggLayout, layout, ggplotPanel_params, ggObj,
-                                    activeGeomLayers, panelIndex, dataFrame,
-                                    mapping, numOfSubtitles,
-                                    parent, showGuides, showScales, swapAxes, linkingKey, showLabels,
-                                    xlabel, ylabel, loonTitle, is_facet_wrap, is_facet_grid) {
+l_histogram.StatCount <- function(ggBuild, ggLayout, layout, ggplotPanelParams, ggObj,
+                                  activeGeomLayers, panelIndex, dataFrame,
+                                  mapping, numOfSubtitles,
+                                  parent, showGuides, showScales, swapAxes, linkingKey, showLabels,
+                                  xlabel, ylabel, loonTitle, FacetWrap, FacetGrid) {
 
   hist_data <- ggBuild$data[[activeGeomLayers]]
   hist_data <- hist_data[hist_data$PANEL == panelIndex, ]
@@ -115,7 +113,7 @@ loonHistogram.StatCount <- function(ggBuild, ggLayout, layout, ggplotPanel_param
   }
 
   # grab the facet index
-  facet_id <- catch_facet_id(numOfSubtitles, hist_x, is_facet_wrap, is_facet_grid,
+  facet_id <- catch_facet_id(numOfSubtitles, hist_x, FacetWrap, FacetGrid,
                              layout, ggLayout, panelIndex, dataFrame)
   hist_values <- hist_x[facet_id]
   remove(hist_x)
@@ -192,7 +190,7 @@ catch_bin_info.StatBin <- function(hist_values, hist_data, flipped_aes, x.limits
                                    ggObj, activeGeomLayers, ...) {
   args <- list(...)
   panelIndex <- args$panelIndex
-  ggplotPanel_params <- args$ggplotPanel_params
+  ggplotPanelParams <- args$ggplotPanelParams
   binwidth <- args$binwidth
 
   position <- ggObj$layers[[activeGeomLayers]]$position
@@ -234,14 +232,14 @@ catch_bin_info.StatBin <- function(hist_values, hist_data, flipped_aes, x.limits
     in_x.limits <- in_y.limits <- rep(TRUE, length(hist_values))
 
     if (!is.null(y.limits)) {
-      if(is.na(y.limits[1])) y.limits[1] <- ggplotPanel_params[[panelIndex]]$y.range[1]
-      if(is.na(y.limits[2])) y.limits[2] <- ggplotPanel_params[[panelIndex]]$y.range[2]
+      if(is.na(y.limits[1])) y.limits[1] <- ggplotPanelParams[[panelIndex]]$y.range[1]
+      if(is.na(y.limits[2])) y.limits[2] <- ggplotPanelParams[[panelIndex]]$y.range[2]
       in_y.limits <- (hist_values > y.limits[1]) & (hist_values < y.limits[2])
     }
 
     if (!is.null(x.limits)) {
-      if(is.na(x.limits[1])) x.limits[1] <- max(0, ggplotPanel_params[[panelIndex]]$x.range[1])
-      if(is.na(x.limits[2])) x.limits[2] <- ggplotPanel_params[[panelIndex]]$x.range[2]
+      if(is.na(x.limits[1])) x.limits[1] <- max(0, ggplotPanelParams[[panelIndex]]$x.range[1])
+      if(is.na(x.limits[2])) x.limits[2] <- ggplotPanelParams[[panelIndex]]$x.range[2]
       binsLim <- getBins(start_value = start_value,
                          end_value = end_value,
                          binwidth = binwidth,
@@ -259,14 +257,14 @@ catch_bin_info.StatBin <- function(hist_values, hist_data, flipped_aes, x.limits
     in_x.limits <- in_y.limits <- rep(TRUE, length(hist_values))
 
     if (!is.null(x.limits)) {
-      if(is.na(x.limits[1])) x.limits[1] <- ggplotPanel_params[[panelIndex]]$x.range[1]
-      if(is.na(x.limits[2])) x.limits[2] <- ggplotPanel_params[[panelIndex]]$x.range[2]
+      if(is.na(x.limits[1])) x.limits[1] <- ggplotPanelParams[[panelIndex]]$x.range[1]
+      if(is.na(x.limits[2])) x.limits[2] <- ggplotPanelParams[[panelIndex]]$x.range[2]
       in_x.limits <- hist_values > x.limits[1] & hist_values < x.limits[2]
     }
 
     if (!is.null(y.limits)) {
-      if(is.na(y.limits[1])) y.limits[1] <- max(0, ggplotPanel_params[[panelIndex]]$y.range[1])
-      if(is.na(y.limits[2])) y.limits[2] <- ggplotPanel_params[[panelIndex]]$y.range[2]
+      if(is.na(y.limits[1])) y.limits[1] <- max(0, ggplotPanelParams[[panelIndex]]$y.range[1])
+      if(is.na(y.limits[2])) y.limits[2] <- ggplotPanelParams[[panelIndex]]$y.range[2]
 
       binsLim <- getBins(start_value = start_value,
                          end_value = end_value,
@@ -371,9 +369,11 @@ catch_bin_info.StatCount <- function(hist_values, hist_data, flipped_aes, x.limi
         drops <- levels_bar[hist_data$y[na_x]]
         drop_count <- hist_data$count[na_x]
 
-        group_by_table <- data.frame(fill = fill_var, hist_values = hist_values) %>%
-          dplyr::group_by(fill, hist_values) %>%
-          dplyr::summarise(n = dplyr::n())
+        # group_by_table <- data.frame(fill = fill_var, hist_values = hist_values) %>%
+        #   dplyr::group_by(fill, hist_values) %>%
+        #   dplyr::summarise(n = dplyr::n())
+
+        group_by_table <- group(fill_var, hist_values)
 
         drop_fill <- group_by_table$fill[(group_by_table$hist_values %in% drops) &
                                            (group_by_table$n %in% drop_count)]
@@ -425,9 +425,11 @@ catch_bin_info.StatCount <- function(hist_values, hist_data, flipped_aes, x.limi
         drops <- levels_bar[hist_data$x[na_y]]
         drop_count <- hist_data$count[na_y]
 
-        group_by_table <- data.frame(fill = fill_var, hist_values = hist_values) %>%
-          dplyr::group_by(fill, hist_values) %>%
-          dplyr::summarise(n = dplyr::n())
+        # group_by_table <- data.frame(fill = fill_var, hist_values = hist_values) %>%
+        #   dplyr::group_by(fill, hist_values) %>%
+        #   dplyr::summarise(n = dplyr::n())
+
+        group_by_table <- group(fill_var, hist_values)
 
         drop_fill <- group_by_table$fill[(group_by_table$hist_values %in% drops) &
                                            (group_by_table$n %in% drop_count)]
@@ -555,7 +557,7 @@ position_operation.PositionDodge <- function(position, hist_values, activeGeomLa
       hist_values <- paste(hist_values, fill_var, sep = sep)
       message("Viewport is changed. Set `l_scaleto_world` to get the world view")
     } else
-      stop("The length of `hist_values` and `fill_var` does not match.", call. = FALSE)
+      rlang::abort("The length of `hist_values` and `fill_var` does not match.")
 
   } else {
     fill_var <- hist_values
@@ -568,16 +570,16 @@ position_operation.PositionDodge <- function(position, hist_values, activeGeomLa
 }
 
 # to get the right values in this facet
-catch_facet_id <- function(numOfSubtitles, hist_x, is_facet_wrap, is_facet_grid,
+catch_facet_id <- function(numOfSubtitles, hist_x, FacetWrap, FacetGrid,
                            layout, ggLayout, panelIndex, dataFrame) {
 
   # one facet
   if (numOfSubtitles == 0) {
     facet_id <- rep(TRUE, length(hist_x))
   } else {
-    mapping.names_pos <-   if(is_facet_wrap) {
+    mapping.names_pos <-   if(FacetWrap) {
       which(colnames(layout) == names(ggLayout$facet_params$facets))
-    } else if(is_facet_grid) {
+    } else if(FacetGrid) {
       which(colnames(layout) == c(names(ggLayout$facet_params$rows),names(ggLayout$facet_params$cols)))
     } else NULL
 
@@ -641,3 +643,34 @@ get_yshows <- function(mapping, layMapping) {
   }
   return("frequency")
 }
+
+## It is equivalent to
+# data.frame(x, y) %>%
+#  group_by(x, y) %>%
+#  summarise(n = n())
+group <- function(x, y) {
+  names <- c(deparse(substitute(x)), deparse(substitute(y)))
+
+  unix <- unique(x)
+  uniy <- unique(y)
+
+  xchar <- as.character(x)
+  ychar <- as.character(y)
+
+  expand <- expand.grid(unix, uniy)
+
+  n <- apply(expand,
+             MARGIN = 1,
+             function(v) {
+               v <- as.character(v)
+               sum(xchar == v[1] & ychar == v[2])
+             })
+
+  id <- setdiff(seq(length(n)), which(n == 0))
+
+  stats::setNames(
+    cbind(expand, n)[id, ],
+    c(names, "n")
+  )
+}
+

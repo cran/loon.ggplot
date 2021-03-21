@@ -1,7 +1,11 @@
 pch_to_glyph <- function(pch, alpha = NULL) {
   len <- length(pch)
 
-  switchPch <- function(pch){
+  if(len == 0) return("circle")
+
+  switchPch <- function(pch) {
+
+
     switch(
       as.character(pch),
       "16" = "circle" ,
@@ -17,13 +21,12 @@ pch_to_glyph <- function(pch, alpha = NULL) {
       "5" = "odiamond",
       "23" = "cdiamond",
       {
-        # warning("pch type ", glyph, " will be mapped to circle")
         "circle"
       }
     )
   }
 
-  vapply(1:len,
+  vapply(seq(len),
          function(i) {
            if(is.na(alpha[i]) || is.null(alpha[i])){
              switchPch(pch[i])
@@ -44,7 +47,6 @@ pch_to_glyph <- function(pch, alpha = NULL) {
                  "5" = "odiamond",
                  "23" = "odiamond",
                  {
-                   # warning("pch type ", glyph, " will be mapped to circle")
                    "ocircle"
                  }
                )
