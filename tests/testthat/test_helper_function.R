@@ -1,5 +1,6 @@
 context("test helper functions")
-library(tidyverse)
+
+pdf(NULL)
 
 ############## geom_hist_ and geom_density_ ##############
 test_that("test helper functions", {

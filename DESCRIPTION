@@ -1,7 +1,7 @@
 Package: loon.ggplot
 Type: Package
 Title: Making 'ggplot2' Plots Interactive with 'loon' and Vice Versa
-Version: 1.1.0
+Version: 1.2.0
 Authors@R: c(
   person('Zehao', 'Xu', email = 'z267xu@uwaterloo.ca', role = c("aut", "cre")),
   person('R. Wayne', 'Oldford', email = 'rwoldford@uwaterloo.ca', role = c("aut"))
@@ -10,20 +10,20 @@ Description: It provides a bridge between the 'loon' and  'ggplot2' packages. Da
 License: GPL-2
 BugReports: https://github.com/great-northern-diver/loon.ggplot/issues
 Depends: R (>= 3.4.0), tcltk, methods, loon (>= 1.3.2), ggplot2,
-Imports: stats, ggmulti, utils, grDevices, grid, GGally, gridExtra,
-        scales, rlang
+        ggmulti
+Imports: stats, utils, grDevices, grid, GGally, gridExtra, scales,
+        rlang
 Suggests: magrittr, tidyr, dplyr, gtable, png, tools, tibble, testthat,
-        knitr, rmarkdown, tidyverse, covr, maps, hexbin, nycflights13,
+        knitr, rmarkdown, covr, maps, hexbin, nycflights13,
         ggplot2movies
-LazyData: true
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
 Language: en-US
 NeedsCompilation: no
-Packaged: 2021-03-20 23:39:51 UTC; Zehao
+Packaged: 2021-05-06 15:52:55 UTC; Zehao
 Author: Zehao Xu [aut, cre],
   R. Wayne Oldford [aut]
 Maintainer: Zehao Xu <z267xu@uwaterloo.ca>
 Repository: CRAN
-Date/Publication: 2021-03-21 08:20:02 UTC
+Date/Publication: 2021-05-06 16:10:02 UTC

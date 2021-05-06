@@ -1,9 +1,10 @@
 context("test serialaxes (ggplot to loon)")
 library(dplyr)
 library(magrittr)
-library(tidyverse)
 library(GGally)
 library(ggmulti)
+
+pdf(NULL)
 
 test_that("test serialaxes ggplot 2 loon",
           {

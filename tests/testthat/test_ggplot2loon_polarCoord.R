@@ -1,9 +1,10 @@
 context("test polar coordinate system (ggplot to loon)")
 library(dplyr)
 library(magrittr)
-library(tidyverse)
 library(GGally)
 library(png)
+
+pdf(NULL)
 
 test_that("Polar coordinate system (ggplot to loon)", {
   p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()

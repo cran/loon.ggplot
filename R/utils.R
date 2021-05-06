@@ -12,6 +12,18 @@ char2null <- function(x, warn = FALSE, message = "") {
   x
 }
 
+hex2colorName <- function(color) {
+  # the input colors are 6/12 digits hex code
+  uniColor <- unique(color)
+  colorName <- color.id(uniColor)
+  len <- length(colorName)
+
+  for(i in seq(len)) {
+    color[color == uniColor[i]] <- colorName[i]
+  }
+  color
+}
+
 is.waive <- function (x) inherits(x, "waiver")
 
 is.ggmatrix <- function(x) {
@@ -89,10 +101,19 @@ plot_range <- function(x = "x.range", panelParams, flip = FALSE) {
 }
 
 
-set_tkLabel <- function(labelBackground = "gray80", labelForeground = "black", labelBorderwidth = 2, labelRelief = "groove",
-                        xlabelBackground = "white", xlabelForeground = "black", xlabelBorderwidth = 2, xlabelRelief = "solid",
-                        ylabelBackground = "white", ylabelForeground = "black", ylabelBorderwidth = 2, ylabelRelief = "solid",
-                        titleBackground = "white", titleForeground = "black", titleBorderwidth = 2, titleRelief = "solid") {
+set_tkLabel <- function(labelBackground = tryCatch(loon::l_getOption("facetLabelBackground"),
+                                                   error = function(e) "gray80"),
+                        labelForeground = loon::l_getOption("foreground"),
+                        labelBorderwidth = 2, labelRelief = "ridge",
+                        xlabelBackground = loon::l_getOption("canvas_bg_guides"),
+                        xlabelForeground = loon::l_getOption("foreground"),
+                        xlabelBorderwidth = 2, xlabelRelief = "flat",
+                        ylabelBackground = loon::l_getOption("canvas_bg_guides"),
+                        ylabelForeground = loon::l_getOption("foreground"),
+                        ylabelBorderwidth = 2, ylabelRelief = "flat",
+                        titleBackground = loon::l_getOption("canvas_bg_guides"),
+                        titleForeground = loon::l_getOption("foreground"),
+                        titleBorderwidth = 2, titleRelief = "flat") {
   list(
     labelBackground = labelBackground,
     labelForeground = labelForeground,
@@ -183,21 +204,23 @@ set_lineSize <- function(data, mapping, size) {
   return(size)
 }
 
-wrap_num <- function(ggLayout, FacetWrap, FacetGrid, tkLabels){
-  if(FacetWrap | !tkLabels) {
+wrap_num <- function(ggLayout, FacetWrap, FacetGrid){
+  if(FacetWrap) {
     length(names(ggLayout$facet_params$facets))
   } else if(FacetGrid) {
     length(names(ggLayout$facet_params$rows)) + length(names(ggLayout$facet_params$cols))
   } else 0
 }
 
-as_ggplot_size <- function(size, power = NULL) {
+as_ggplot_size <- function(size, power = NULL,
+                           margin = ggplot2::GeomPoint$default_aes$size) {
 
-  power <- power %||% 1/4
+  power <- power %||% 1/2
 
   if (is.numeric(size)) {
     # arbitrary power
-    size <- (size/as.numeric(loon::l_getOption("size")))^(power)
+    size <- (size/as.numeric(loon::l_getOption("size")))^(power) *
+      margin
   } else {
     warning(
       "size is ",
@@ -209,17 +232,9 @@ as_ggplot_size <- function(size, power = NULL) {
   size
 }
 
-as_r_text_size <- function(size, digits = 2) {
-  round(size/1.76, digits)
-}
-
-as_r_point_size <- function(size, digits = 2) {
-  round(2*log(size), digits)
-}
-
 utils::globalVariables(c("PANEL", "axes.sequence", "density", "group",
                          "height", "positive", "setup_mapping", "x", "y",
-                         "ymax", "ymin"))
+                         "ymax", "ymin", "fill", "..density.."))
 
 as_r_line_size <- function(size, digits = 2) {
   round(size/.pt, digits)
@@ -228,7 +243,6 @@ as_r_line_size <- function(size, digits = 2) {
 adjust_image_size <- function(x) {
   x/50
 }
-
 
 pixels_2_lines <- function(x, digits = 2) {
   round(x / 100, digits)

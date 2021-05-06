@@ -1,5 +1,5 @@
-l_loonPlot <- function(ggObj, panelIndex, args,
-                       plotInfo, numOfSubtitles, modelLayers, activeInfo, index, parent,
+l_loonPlot <- function(ggObj, panelIndex, args, plotInfo, numOfSubtitles,
+                       modelLayers, activeInfo, index, parent,
                        showGuides, showScales, swapAxes, xlabel, ylabel, loonTitle) {
 
 
@@ -8,6 +8,7 @@ l_loonPlot <- function(ggObj, panelIndex, args,
   buildggObj <- plotInfo$buildggObj
   linkingKey <- plotInfo$linkingKey
   itemLabel <- plotInfo$itemLabel
+  nDimStates <- plotInfo$nDimStates
 
   # gg build
   ggplotPanelParams <- buildggObj$ggplotPanelParams
@@ -47,6 +48,7 @@ l_loonPlot <- function(ggObj, panelIndex, args,
                      panelIndex = panelIndex,
                      dataFrame = dataFrame,
                      parent = parent,
+                     nDimStates = nDimStates,
                      showGuides = showGuides,
                      linkingKey = linkingKey,
                      showLabels = plotInfo$showLabels,
@@ -81,13 +83,13 @@ l_loonPlot <- function(ggObj, panelIndex, args,
                 showScales = showScales,
                 swapAxes = swapAxes,
                 linkingKey = linkingKey,
+                nDimStates = nDimStates,
                 showLabels = plotInfo$showLabels,
                 xlabel = xlabel,
                 ylabel = ylabel,
                 loonTitle = loonTitle,
                 FacetWrap = FacetWrap,
                 FacetGrid = FacetGrid)
-
 
   } else if(activeModel == "l_plot" & length(boxplotPointLayers) > 0) {
 
@@ -105,6 +107,7 @@ l_loonPlot <- function(ggObj, panelIndex, args,
                   swapAxes = swapAxes,
                   linkingKey = linkingKey,
                   itemLabel = itemLabel,
+                  nDimStates = nDimStates,
                   showLabels = plotInfo$showLabels,
                   xlabel = xlabel,
                   ylabel = ylabel,
