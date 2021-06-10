@@ -12,9 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       tidy = FALSE)
 library(knitr)
 set.seed(12314159)
-imageDirectory <- "./loon2ggplots"
-dataDirectory <- "./loon2ggplots"
-path_concat <- function(path1, path2, sep="/") {paste(path1, path2, sep = sep)}
+imageDirectory <- file.path(".", "images", "loon2ggplots")
 
 library(ggplot2, quietly = TRUE)
 library(dplyr, quietly = TRUE)
@@ -42,7 +40,7 @@ library(maps, quietly = TRUE)
 #  g1
 
 ## ----l_plot_to_gg_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "ggScatter.png"))
+include_graphics(file.path(imageDirectory, "ggScatter.png"))
 
 ## ----l_plot_to_gg_modification, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
 #  g1 +
@@ -57,7 +55,7 @@ include_graphics(path_concat(imageDirectory, "ggScatter.png"))
 #    )
 
 ## ----l_plot_to_gg_modification_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "ggScatter_modification.png"))
+include_graphics(file.path(imageDirectory, "ggScatter_modification.png"))
 
 ## ----loon pairs, message = FALSE, warning = FALSE, eval = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
 #  mt %>%
@@ -72,7 +70,7 @@ include_graphics(path_concat(imageDirectory, "ggScatter_modification.png"))
 #  g2
 
 ## ----p1_piped_staic_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "loon_l_pairs.png"))
+include_graphics(file.path(imageDirectory, "loon_l_pairs.png"))
 
 ## ----p1_piped_modification  ggplot, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
 #  # Add a smooth line on g[2,2]
@@ -88,5 +86,5 @@ include_graphics(path_concat(imageDirectory, "loon_l_pairs.png"))
 #  g2
 
 ## ----p1_piped_modification_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "loon_l_pairs_modification.png"))
+include_graphics(file.path(imageDirectory, "loon_l_pairs_modification.png"))
 

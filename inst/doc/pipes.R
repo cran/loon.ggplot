@@ -12,9 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       tidy = FALSE)
 library(knitr)
 set.seed(12314159)
-imageDirectory <- "./pipes"
-dataDirectory <- "./pipes"
-path_concat <- function(path1, path2, sep="/") {paste(path1, path2, sep = sep)}
+imageDirectory <- file.path(".", "images", "pipes")
 
 library(ggplot2, quietly = TRUE)
 library(dplyr, quietly = TRUE)
@@ -127,5 +125,5 @@ p1_piped
 #    plot()   # get a static version via grid
 
 ## ----loon_only_pipe_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "gas_usage.png"))
+include_graphics(file.path(imageDirectory, "gas_usage.png"))
 

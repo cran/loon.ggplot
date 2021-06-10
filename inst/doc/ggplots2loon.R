@@ -1,4 +1,5 @@
 ## ----setup, include=FALSE, warning=FALSE--------------------------------------
+library(knitr)
 knitr::opts_chunk$set(echo = TRUE, 
                       warning = FALSE,
                       message = FALSE,
@@ -10,11 +11,9 @@ knitr::opts_chunk$set(echo = TRUE,
                       comment = "#>",
                       tidy.opts = list(width.cutoff = 65),
                       tidy = FALSE)
-library(knitr)
+
 set.seed(12314159)
-imageDirectory <- "./ggplots2loon"
-dataDirectory <- "./ggplots2loon"
-path_concat <- function(path1, path2, sep="/") {paste(path1, path2, sep = sep)}
+imageDirectory <- file.path(".", "images", "ggplots2loon")
 
 library(ggplot2, quietly = TRUE)
 library(dplyr, quietly = TRUE)
@@ -42,16 +41,16 @@ h1
 #  grid.loon(l_p1)
 
 ## ----grid_version_of_l_p1_graph, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 6, fig.align = "center", fig.caption = "Loon inspector Layers tab for l_p_fit`", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_plot_l_p1.png"))
+include_graphics(file.path(imageDirectory, "l_plot_l_p1.png"))
 
 ## ----grid_version_of_l_h1, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 4, fig.align = "center", out.width = "50%"----
 #  plot(l_h1)   # equivalent to grid.loon(l_h1)
 
 ## ----grid_version_of_l_h1_graph, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 6, fig.align = "center", fig.caption = "Loon inspector Layers tab for l_p_fit`", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_hist_l_h1.png"))
+include_graphics(file.path(imageDirectory, "l_hist_l_h1.png"))
 
 ## ----inspector_of_l_p1, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 4, fig.align = "center", fig.caption = "Loon inspector for the scatterplot l_p`", out.width = "25%"----
-include_graphics(path_concat(imageDirectory, "inspector_l_p1.png"))
+include_graphics(file.path(imageDirectory, "inspector_l_p1.png"))
 
 ## ----loon_data_structure, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", out.width = "50%"----
 #  class(l_p1)
@@ -110,7 +109,7 @@ include_graphics(path_concat(imageDirectory, "inspector_l_p1.png"))
 #  plot(l_p1)
 
 ## ----high_gear_manual_grid_plot_graph, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 6, fig.align = "center", fig.caption = "Loon inspector for the scatterplot l_p`", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_plot_l_p1_zoomIn.png"))
+include_graphics(file.path(imageDirectory, "l_plot_l_p1_zoomIn.png"))
 
 ## ----Back_to_all_points, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
 #  l_p1["active"] <- TRUE
@@ -119,7 +118,7 @@ include_graphics(path_concat(imageDirectory, "l_plot_l_p1_zoomIn.png"))
 #  plot(l_p1)
 
 ## ----Back_to_all_points_graph, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 6, fig.align = "center", fig.caption = "Loon inspector for the scatterplot l_p`", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_plot_l_p1_zoomOut.png"))
+include_graphics(file.path(imageDirectory, "l_plot_l_p1_zoomOut.png"))
 
 ## ----set_initial_linking_Group, eval = FALSE----------------------------------
 #  l_p1["linkingGroup"] <- "Motor Trend 1974"
@@ -132,7 +131,7 @@ include_graphics(path_concat(imageDirectory, "l_plot_l_p1_zoomOut.png"))
 #  plot(l_h1)
 
 ## ----stacked_colours_plot_graph, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 6, fig.align = "center", fig.caption = "Loon inspector for the scatterplot l_p`", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_hist_l_h1_stacked_colours.png"))
+include_graphics(file.path(imageDirectory, "l_hist_l_h1_stacked_colours.png"))
 
 ## ----ggplot_acceleration, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.align = "center", out.width = "50%"----
 # First using another ggplot
@@ -153,7 +152,7 @@ p2
 #  plot(l_p2)
 
 ## ----loon_plot_l_p2_graph, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 6, fig.align = "center", fig.caption = "Loon inspector for the scatterplot l_p`", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_plot_l_p2.png"))
+include_graphics(file.path(imageDirectory, "l_plot_l_p2.png"))
 
 ## ----default_linked_states_l_plot, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.align = "center", out.width = "50%"----
 #  l_getLinkedStates(l_p1)
@@ -178,13 +177,13 @@ include_graphics(path_concat(imageDirectory, "l_plot_l_p2.png"))
 #  plot(l_p1)
 
 ## ----changed_glyphs_l_p1_graph, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 6, fig.align = "center", fig.caption = "Loon inspector for the scatterplot l_p`", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_plot_l_p1_changed_glyphs.png"))
+include_graphics(file.path(imageDirectory, "l_plot_l_p1_changed_glyphs.png"))
 
 ## ----changed_glyphs_l_p2, message = FALSE, eval = FALSE, warning = FALSE,  fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
 #  plot(l_p2)
 
 ## ----changed_glyphs_l_p2_graph, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 6, fig.align = "center", fig.caption = "Loon inspector for the scatterplot l_p`", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_plot_l_p2_changed_glyphs.png"))
+include_graphics(file.path(imageDirectory, "l_plot_l_p2_changed_glyphs.png"))
 
 ## ----mtcars_smooth, message = FALSE, warning = FALSE, fig.width = 4, fig.height = 4, fig.align = "center", out.width = "50%"----
 p_fit <- ggplot(mtcars, aes(drat, mpg)) + geom_smooth() + geom_point()
@@ -194,7 +193,7 @@ p_fit
 #  l_p_fit <- ggplot2loon(p_fit)
 
 ## ----inspector_of_l_p_fit, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5.5, fig.height = 4, fig.align = "center", fig.caption = "Loon inspector Layers tab for l_p_fit`", out.width = "25%"----
-include_graphics(path_concat(imageDirectory, "inspector_l_p_fit.png"))
+include_graphics(file.path(imageDirectory, "inspector_l_p_fit.png"))
 
 ## ----lower_layer, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
 #  l_layer_lower(l_p_fit, "model")
@@ -283,7 +282,7 @@ fwrap
 #  l_fwrap <- ggplot2loon(fwrap, linkingGroup = "Motor Trend 1974")
 
 ## ----linking_Key_fwrap, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(path_concat(imageDirectory, "l_fwrap.png"))
+include_graphics(file.path(imageDirectory, "l_fwrap.png"))
 
 ## ----class_l_fwrap, eval = FALSE----------------------------------------------
 #  class(l_fwrap)
