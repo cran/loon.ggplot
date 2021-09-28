@@ -7,7 +7,7 @@
 zoom(layerId = NULL, scaleToFun = NULL)
 }
 \arguments{
-\item{layerId}{numerical; which layer to scale to}
+\item{layerId}{numerical; which layer to scale the plot by.}
 
 \item{scaleToFun}{scale to function. See details.}
 }
@@ -15,8 +15,7 @@ zoom(layerId = NULL, scaleToFun = NULL)
 a \code{ggproto} object
 }
 \description{
-Modify the \code{zoomX}, \code{zoomY}, \code{panX}, \code{panY},
-etc to change the plot region
+Change the visible plot region by scaling to different elements of the display.
 }
 \details{
 Argument \code{layerId} is used for additional plot region settings.
@@ -40,8 +39,8 @@ problems. The table shows the available \code{scaleToFun} functions
   active \tab \code{\link{l_scaleto_active}}\cr
   selected \tab \code{\link{l_scaleto_selected}}\cr
   layer \tab \code{\link{l_scaleto_layer}}\cr}
-Expect all these, users can customize their own function. Note that,
-the arguments should match the ones of functions shown in the table.
+Users can also supply their own function, providing its arguments match those
+of the functions shown in the above table.
 }
 \examples{
 if(interactive()) {

@@ -20,6 +20,7 @@ library(nycflights13, quietly = TRUE)
 library(loon, quietly = TRUE)
 library(magrittr, quietly = TRUE)
 library(maps, quietly = TRUE)
+library(patchwork, quietly = TRUE)
 
 ## ----l_plot, message = FALSE,  warning = FALSE, eval = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
 #  library(dplyr)
@@ -66,6 +67,7 @@ include_graphics(file.path(imageDirectory, "ggScatter_modification.png"))
 #    l_pp
 
 ## ----p1_piped_staic  ggplot, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
+#  library(patchwork)
 #  g2 <- loon2ggplot(l_pp)
 #  g2
 
@@ -73,18 +75,17 @@ include_graphics(file.path(imageDirectory, "ggScatter_modification.png"))
 include_graphics(file.path(imageDirectory, "loon_l_pairs.png"))
 
 ## ----p1_piped_modification  ggplot, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-#  # Add a smooth line on g[2,2]
-#  # the index of `lp100km vs weight` scatterplot is
-#  # 1 * 4 + 2
-#  g2$plots[[6]] <- g2$plots[[6]] + geom_smooth()
-#  # Add a density curve on g[1,2]
-#  # the index of `weight` histogram is
-#  # 1 * 4 + 1
-#  g2$plots[[5]] <- g2$plots[[5]] + geom_density()
-#  # Modify theme
-#  g2 <- g2 + theme_light()
+#  # Add a regression line on the `lp100km vs weight` scatterplot
+#  g2$patches$plots[[1]] <- g2$patches$plots[[1]] +
+#    geom_smooth(method = "lm")
+#  # Add a density curve on the `weight` histogram
+#  g2$patches$plots[[4]] <- g2$patches$plots[[4]] +
+#    geom_density()
+#  # Add a title
+#  g2 <- g2 +
+#    patchwork::plot_annotation(title = "Mtcars Pairs Plot")
 #  g2
 
 ## ----p1_piped_modification_graph, echo = FALSE, message = FALSE,  warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
-include_graphics(file.path(imageDirectory, "loon_l_pairs_modification.png"))
+include_graphics(file.path(imageDirectory,"loon_l_pairs_modification.png"))
 

@@ -1,14 +1,14 @@
 pch_to_glyph <- function(pch, alpha = NULL) {
-  len <- length(pch)
 
-  if(len == 0) return("circle")
+  len <- length(pch)
+  if(len == 0) return(loon::l_getOption("glyph"))
 
   switchPch <- function(pch) {
 
 
     switch(
       as.character(pch),
-      "16" = "circle" ,
+      "19" = "circle" ,
       "1" = "ocircle",
       "21" = "ccircle",
       "15" = "square",
@@ -21,7 +21,7 @@ pch_to_glyph <- function(pch, alpha = NULL) {
       "5" = "odiamond",
       "23" = "cdiamond",
       {
-        "circle"
+        loon::l_getOption("glyph")
       }
     )
   }
@@ -34,7 +34,7 @@ pch_to_glyph <- function(pch, alpha = NULL) {
              if(alpha[i] < 0.5 ){
                switch(
                  as.character( pch[i] ),
-                 "16" = "ocircle" ,
+                 "19" = "ocircle" ,
                  "1" = "ocircle",
                  "21" = "ocircle",
                  "15" = "osquare",

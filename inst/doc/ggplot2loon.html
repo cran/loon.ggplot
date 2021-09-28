@@ -12,7 +12,7 @@
 
 <meta name="author" content="Wayne Oldford and Zehao Xu" />
 
-<meta name="date" content="2021-06-10" />
+<meta name="date" content="2021-09-27" />
 
 <title>ggplots –&gt; loon plots</title>
 
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">ggplots –&gt; loon plots</h1>
 <h4 class="author">Wayne Oldford and Zehao Xu</h4>
-<h4 class="date">2021-06-10</h4>
+<h4 class="date">2021-09-27</h4>
 
 
 <div id="TOC">
@@ -208,6 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Now select the other plot <code>l_h1</code> or <code>l_p1</code>. On the loon inspector for this plot, you can again enter “mtcars” as this plot’s linking group (this can be done as before or selected from the menu accessible from the down arrow next to the linking group. As soon as the second plot is linked, the user is prompted to choose how to synchronize the linked features of the new plot to the previous plot. The choice is between <em>pushing</em> the display features from the current plot to the rest of the plots in the group and <em>pulling</em> the display features from the group to change those of the current plot. The resulting linking group entry should now show <code>mtcars [2 linked]</code>.</p>
 <p>Once the both plots are in the same linking group (i.e. “mtcars”), selections in one plot will be reflected in the other. Try this. To see colour changes in the histogram, the box <code>stacked colors</code> must be checked.</p>
 <p>Linking is one way to condition on the values in one plot and observe their effect in the others. Try this with “brushing” in either plot.</p>
+<p>See the vignette <code>Linking</code> for more.</p>
 </div>
 </div>
 <div id="interaction---programmatic" class="section level3">
@@ -461,8 +462,10 @@ In <code>ggplot2</code> several <code>geom</code>s might appear in the construct
 </div>
 <div id="function-loon.ggplot" class="section level2">
 <h2>Function <code>loon.ggplot()</code></h2>
-<p><code>loon.ggplot()</code> function in <code>loon.ggplot</code> package is a <code>S3</code> method and gathers features of both <code>loon2ggplot()</code> and <code>ggplot2loon()</code>. It can take either a <code>loon</code> widget or <code>gg</code> object and transform back and forth.</p>
-<p>Ggplot to loon: <code>loon.ggplot(gg)</code> is equivalent to <code>ggplot2loon(gg)</code>.</p>
+<p><code>loon.ggplot()</code> function in <code>loon.ggplot</code> package is an <code>S3</code> method and gathers features of both <code>loon2ggplot()</code> and <code>ggplot2loon()</code>. It can take either a <code>loon</code> widget or a <code>gg</code> object and transform back and forth.</p>
+<p>ggplot to loon: <code>loon.ggplot(gg)</code> is equivalent to <code>ggplot2loon(gg)</code>.</p>
+<hr />
+<p>See the vignette <code>A Grammar of Interactive Graphics</code> for more.</p>
 </div>
 
 

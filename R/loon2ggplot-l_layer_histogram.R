@@ -1,16 +1,19 @@
 #' @rdname loon2ggplot
 #' @export
-loon2ggplot.l_layer_histogram <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_histogram <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                          showNearestColor = FALSE, ...) {
 
   widget <- loon::l_create_handle(attr(target, "widget"))
   ggObj <- list(...)$ggObj
+  n <- widget['n']
+  if(n == 0) return(ggObj)
 
   if(asAes) {
 
-    data <- histogramAsAesTRUE(widget)
+    data <- histogramAsAesTRUE(widget, showNearestColor)
 
     fill <- data$fill
-    colour <- data$colour
+    color <- data$colour
     x <- data$x
     values <- data$values
 
@@ -21,17 +24,24 @@ loon2ggplot.l_layer_histogram <- function(target, asAes = TRUE, selectedOnTop = 
           ggplot2::aes(x = x, fill = fill)
         } else {
           ggplot2::aes(x = x, fill = fill,
-                       y = ..density..) # the layout would be different from the loon one
+                       y = ..density..)
+          # the layout would be different from the loon one
         },
-        colour = colour,
+        colour = color,
         boundary = widget['origin'],
         binwidth = widget['binwidth'],
-        inherit.aes = FALSE
+        inherit.aes = FALSE,
+        closed = "left"
       ) +
       ggplot2::scale_fill_manual(
         values = values,
         breaks = values,
-        labels = selection_color_labels(values))
+        labels = values)
+
+    uniFill <- unique(fill[!is.na(fill)])
+    if(length(uniFill) <= 1)
+      ggObj <- ggObj + ggplot2::guides(color = FALSE, fill = FALSE)
+
   } else {
 
     data <- histogramAsAesFALSE(widget)
@@ -66,7 +76,7 @@ loon2ggplot.l_layer_histogram <- function(target, asAes = TRUE, selectedOnTop = 
   return(ggObj)
 }
 
-histogramAsAesTRUE <- function(widget) {
+histogramAsAesTRUE <- function(widget, showNearestColor = FALSE) {
 
   colorOutline <- if(widget['showOutlines']) as_hex6color(widget["colorOutline"]) else NA
   states <- get_layer_states(widget, native_unit = FALSE)
@@ -79,7 +89,7 @@ histogramAsAesTRUE <- function(widget) {
 
   selectcolor <- loon::l_getOption("select-color")
   activeColor[activeSelected] <- selectcolor
-  activeX <- states$x[active]
+  activeX <- if(widget["swapAxes"]) states$y[active] else states$x[active]
 
   uniqueCol <- rev(levels(factor(activeColor)))
   colorStackingOrder <- widget['colorStackingOrder']
@@ -106,8 +116,8 @@ histogramAsAesTRUE <- function(widget) {
   }
 
   # preserve the order
-  values <- l_colorName(values, error = FALSE)
-  activeColor <- l_colorName(activeColor, error = FALSE)
+  values <- l_colorName(values, error = FALSE, precise = !showNearestColor)
+  activeColor <- l_colorName(activeColor, error = FALSE, precise = !showNearestColor)
   activeColor <- factor(activeColor, levels = values)
 
   return(

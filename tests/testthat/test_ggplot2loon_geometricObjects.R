@@ -1,7 +1,6 @@
 context("test geometric objects (ggplot to loon)")
 library(dplyr)
 library(magrittr)
-library(GGally)
 library(ggmulti)
 library(hexbin)
 
@@ -228,19 +227,19 @@ test_that("geometric layers (ggplot to loon)", {
   g <- ggplot2loon(pp)
   expect_equal(class(g), c("l_plot", "loon"))
 
-  plotList <- list()
-  for (i in 1:6) {
-    plotList[[i]] <- suppressWarnings(ggally_text(paste("Plot #", i, sep = "")))
-  }
-  pm <- ggmatrix(
-    plotList,
-    2, 3,
-    c("A", "B", "C"),
-    c("D", "E"),
-    byrow = TRUE
-  )
-  g <- ggplot2loon(pm)
-  expect_equal(class(g), c("l_ggmatrix", "l_compound", "loon"))
+  # plotList <- list()
+  # for (i in 1:6) {
+  #   plotList[[i]] <- suppressWarnings(ggally_text(paste("Plot #", i, sep = "")))
+  # }
+  # pm <- ggmatrix(
+  #   plotList,
+  #   2, 3,
+  #   c("A", "B", "C"),
+  #   c("D", "E"),
+  #   byrow = TRUE
+  # )
+  # g <- ggplot2loon(pm)
+  # expect_equal(class(g), c("l_ggmatrix", "l_compound", "loon"))
 })
 
 test_that("geometric (histogram, bar) layers (ggplot to loon)", {
@@ -347,7 +346,6 @@ test_that("test static objects", {
   p <- ggplot(data = data.frame(x = c(1, 2), y = c(1, 2)),
               mapping = aes(x = x, y = y)) +
     geom_image_glyph(images = list(image, mat),
-                     units = "cm",
                      imagewidth = 1,
                      imageheight = 1)
   lp <- loon.ggplot(p, activeGeomLayers = 0L)

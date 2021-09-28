@@ -2,7 +2,6 @@
 # Since `Unexported objects imported by ':::' calls` will cause a NOTE in R CMD check
 
 # All these functions are exported in loon 1.3.7
-glyph_to_pch <- utils::getFromNamespace("glyph_to_pch", "loon")
 get_display_color <- utils::getFromNamespace("get_display_color", "loon")
 as_hex6color <- utils::getFromNamespace("as_hex6color", "loon")
 get_font_info_from_tk <- utils::getFromNamespace("get_font_info_from_tk", "loon")
@@ -11,13 +10,13 @@ get_model_display_order <- utils::getFromNamespace("get_model_display_order", "l
 tcl_img_2_r_raster <- utils::getFromNamespace("tcl_img_2_r_raster", "loon")
 char2num.data.frame <- utils::getFromNamespace("char2num.data.frame", "loon")
 
-# This function is temporary
-# after loon is updated to 1.3.7
+# These functions are temporary
+# after loon is updated to 1.3.8
 # this function will be switched to
-# `loon::l_colorName`
-l_colorName <- function(color, error = TRUE) {
+# `loon::l_colorName` and `loon::glyph_to_pch`
+l_colorName <- function(color, error = TRUE, precise = FALSE) {
 
-  color.id <- function(x, error = TRUE, env = environment()) {
+  color.id <- function(x, error = TRUE, precise = FALSE, env = environment()) {
 
     invalid.color <- c()
 
@@ -33,7 +32,14 @@ l_colorName <- function(color, error = TRUE) {
                            c2 <- grDevices::col2rgb(color)
                            coltab <- grDevices::col2rgb(colors())
                            cdist <- apply(coltab, 2, function(z) sum((z - c2)^2))
-                           colors()[which(cdist == min(cdist))][1]
+                           if(precise) {
+                             if(min(cdist) == 0)
+                               colors()[which(cdist == min(cdist))][1]
+                             else
+                               color
+                           } else {
+                             colors()[which(cdist == min(cdist))][1]
+                           }
                          },
                          error = function(e) {
 
@@ -58,7 +64,7 @@ l_colorName <- function(color, error = TRUE) {
 
   # the input colors are 6/12 digits hex code
   uniColor <- unique(color)
-  colorName <- color.id(uniColor, error = error)
+  colorName <- color.id(uniColor, error = error, precise = precise)
   len <- length(colorName)
 
   for(i in seq(len)) {
@@ -66,6 +72,30 @@ l_colorName <- function(color, error = TRUE) {
   }
   color
 }
+
+glyph_to_pch <- function(glyph) {
+
+  vapply(glyph, function(x) {
+    switch(
+      x,
+      circle = 19,
+      ocircle = 1,
+      ccircle = 21,
+      square = 15,
+      osquare = 0,
+      csquare = 22,
+      triangle = 17,
+      otriangle = 2,
+      ctriangle = 24,
+      diamond = 18,
+      odiamond = 5,
+      cdiamond = 23,
+      NA_integer_
+    )
+  }, numeric(1))
+
+}
+
 
 ## Un-exported functions in ggplot2
 # utils::getFromNamespace("message_wrap", "ggplot2")
@@ -89,6 +119,8 @@ set_sec_axis <- function(sec.axis, scale) {
   scale$secondary.axis <- sec.axis
   return(scale)
 }
+
+new_aes <- getFromNamespace("new_aes", "ggplot2")
 
 # It is learned from the function `get_gridAesthetic` in package `ggmulti`
 # The difference is that for `get_gridAesthetic`, the output coordinate is

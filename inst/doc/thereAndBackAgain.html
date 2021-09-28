@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="R.W. Oldford and Zehao Xu" />
+
+<meta name="date" content="2021-09-27" />
+
+<title>There And Back Again</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">There And Back Again</h1>
+<h3 class="subtitle">Differences When Transforming</h3>
+<h4 class="author">R.W. Oldford and Zehao Xu</h4>
+<h4 class="date">2021-09-27</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#some-data">Some data</a></li>
+<li><a href="#ggplot-to-loon-transformation"><code>ggplot</code> to <code>loon</code> transformation</a>
+<ul>
+<li><a href="#the-ggplot-and-its-states">the <code>ggplot</code> and its states</a></li>
+<li><a href="#the-loon-plot-and-its-states">the <code>loon</code> plot and its states</a></li>
+<li><a href="#changing-from-ggplot-to-loon">changing from ggplot to loon</a>
+<ul>
+<li><a href="#shape-to-glyph">shape to glyph</a></li>
+<li><a href="#point-size">point size</a></li>
+<li><a href="#colours">colours</a></li>
+</ul></li>
+<li><a href="#effect-of-missing-data">effect of missing data</a>
+<ul>
+<li><a href="#on-linking-keys">on linking keys</a></li>
+<li><a href="#for-more-information">for more information</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#loon-to-ggplot-transformation"><code>loon</code> to <code>ggplot</code> transformation</a>
+<ul>
+<li><a href="#the-ggplot-states">the <code>ggplot</code> states</a></li>
+<li><a href="#after-interactive-changes">After interactive changes</a>
+<ul>
+<li><a href="#linking-keys-after-loon.ggplot">linking keys after <code>loon.ggplot()</code></a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="some-data" class="section level1">
+<h1>Some data</h1>
+<p>Consider the following artificially generated dataset:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">A =</span> <span class="fu">c</span>(<span class="dv">19</span>, <span class="dv">19</span>, <span class="dv">25</span>, <span class="dv">62</span>, <span class="dv">34</span>, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                         <span class="dv">58</span>, <span class="dv">62</span>, <span class="dv">40</span>, <span class="dv">24</span>, <span class="dv">60</span>, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                         <span class="dv">70</span>, <span class="dv">40</span>, <span class="dv">40</span>, <span class="dv">34</span>, <span class="dv">26</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">B =</span> <span class="fu">c</span>(<span class="dv">68</span>, <span class="dv">63</span>, <span class="dv">63</span>, <span class="dv">13</span>, <span class="dv">55</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                         <span class="dv">78</span>, <span class="dv">14</span>, <span class="dv">14</span>, <span class="cn">NA</span>, <span class="dv">28</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                         <span class="cn">NA</span>, <span class="dv">55</span>, <span class="dv">57</span>, <span class="dv">40</span>, <span class="dv">78</span>) )</span></code></pre></div>
+<p>There are 15 observations in the dataset; variable <code>A</code> is complete (has no missing values), whereas variables <code>B</code> and <code>C</code> are missing 2 and 0 observations, respectively.</p>
+</div>
+<div id="ggplot-to-loon-transformation" class="section level1">
+<h1><code>ggplot</code> to <code>loon</code> transformation</h1>
+<div id="the-ggplot-and-its-states" class="section level2">
+<h2>the <code>ggplot</code> and its states</h2>
+<p>Begin with a <code>ggplot</code> defined using the interactive grammar extension:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ggp <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data, </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> A, <span class="at">y =</span> B)) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Some title&quot;</span>) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;grey&quot;</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linking</span>(<span class="at">linkingGroup =</span> <span class="st">&quot;my plots&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ggp)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" width="40%" style="display: block; margin: auto;" /></p>
+<p>Information on the <code>ggplot</code> corresponding to <code>loon</code> states is had using <code>ggplot_build()</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get the ggplot data corresponding to loon &quot;states&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ggp_states <span class="ot">&lt;-</span> <span class="fu">ggplot_build</span>(ggp)<span class="sc">$</span>data[[<span class="dv">1</span>]]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ggp_states</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     x  y PANEL group shape colour size fill alpha stroke</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  19 68     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  19 63     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  25 63     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  62 13     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  34 55     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  58 78     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7  62 14     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8  40 14     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9  24 NA     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 60 28     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 70 NA     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 40 55     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 40 57     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 34 40     1    -1    19   grey    5   NA    NA    0.5</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 26 78     1    -1    19   grey    5   NA    NA    0.5</span></span></code></pre></div>
+<p>Note that some of the <code>x</code> and <code>y</code> values are <code>NA</code>, representing missing values.</p>
+</div>
+<div id="the-loon-plot-and-its-states" class="section level2">
+<h2>the <code>loon</code> plot and its states</h2>
+<p>Now construct the <code>loon</code> plot from this <code>ggplot</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lp <span class="ot">&lt;-</span> <span class="fu">loon.ggplot</span>(ggp)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lp)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" width="40%" style="display: block; margin: auto;" /></p>
+<p>The <code>loon</code> plot looks slightly different:</p>
+<ul>
+<li>title in a different position,</li>
+<li>the relative sizes of the margins and drawing areas,</li>
+<li>axis tic marks and labels,</li>
+<li>font sizes and styles, and</li>
+<li>points are a slightly darker grey in the <code>loon</code> plot.</li>
+</ul>
+<p>Plots in <code>loon</code> have more constrained layouts than those in <code>ggplot2</code>, since focus is primarily on interactive as opposed to publication quality graphics.<br />
+Some differences (e.g., colour) are also because <code>loon</code> is based on <code>Tcl</code> for drawing primitives.</p>
+<p>Plot states in <code>loon</code> are accessible using <code>[]</code> and the name of the state. Values are assigned in the same way. Names of interactively changeable states in <code>loon</code> are</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lp)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;glyph&quot;            &quot;itemLabel&quot;        &quot;showItemLabels&quot;   &quot;linkingGroup&quot;    </span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;linkingKey&quot;       &quot;zoomX&quot;            &quot;zoomY&quot;            &quot;panX&quot;            </span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;panY&quot;             &quot;deltaX&quot;           &quot;deltaY&quot;           &quot;xlabel&quot;          </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] &quot;ylabel&quot;           &quot;title&quot;            &quot;showLabels&quot;       &quot;showScales&quot;      </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [17] &quot;swapAxes&quot;         &quot;showGuides&quot;       &quot;background&quot;       &quot;foreground&quot;      </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [21] &quot;guidesBackground&quot; &quot;guidelines&quot;       &quot;minimumMargins&quot;   &quot;labelMargins&quot;    </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [25] &quot;scalesMargins&quot;    &quot;x&quot;                &quot;y&quot;                &quot;xTemp&quot;           </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [29] &quot;yTemp&quot;            &quot;color&quot;            &quot;selected&quot;         &quot;active&quot;          </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [33] &quot;size&quot;             &quot;tag&quot;              &quot;useLoonInspector&quot; &quot;selectBy&quot;        </span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [37] &quot;selectionLogic&quot;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># and accessed with [] as in </span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;title&quot;</span>]</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Some title&quot;</span></span></code></pre></div>
+<p>(See also <code>?l_info_states</code>.)</p>
+<p>Some, like <code>x</code>, <code>y</code>, and <code>color</code>, are <em>n-dimensional states</em> whose values correspond to those on individual observations. These may be changed using the <code>[] &lt;-</code> notation as well.</p>
+<p>Because <code>loon</code> plots exclude observations missing values in any its n-dimensional states, the <code>loon</code> plot will have fewer observations than the corresponding <code>ggplot</code>, even though the same number of points may be plotted. The actual number of observations in the <code>loon</code> plot is</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;n&quot;</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 13</span></span></code></pre></div>
+<p>which is less than the number of observations recorded in the <code>ggplot</code> structure (namely <code>nrow(ggp_states) =</code> 15).</p>
+</div>
+<div id="changing-from-ggplot-to-loon" class="section level2">
+<h2>changing from ggplot to loon</h2>
+<p>Differences between <code>ggplot</code> structure and <code>loon</code> plot structure (and how these affect the visualizations) is worth exploring in a little more detail. A better understanding will be helpful when transforming back and forth between the two.</p>
+<div id="shape-to-glyph" class="section level3">
+<h3>shape to glyph</h3>
+<p>In <code>R</code> the point symbol plotted is associated with a numerical code <code>pch</code>. In <code>loon</code> the point symbol is a glyph, identified by a string.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ggp_states<span class="sc">$</span>shape</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;glyph&quot;</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;circle&quot; &quot;circle&quot; &quot;circle&quot; &quot;circle&quot; &quot;circle&quot; &quot;circle&quot; &quot;circle&quot; &quot;circle&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;circle&quot; &quot;circle&quot; &quot;circle&quot; &quot;circle&quot; &quot;circle&quot;</span></span></code></pre></div>
+<p>As with other plot “states”, there is not always a <code>glyph</code> in <code>loon</code> that matches a <code>pch</code> in <code>R</code>. Values of <code>pch</code> with no counterpart in <code>loon</code> will map to the default <code>glyph</code> in <code>loon</code>.</p>
+</div>
+<div id="point-size" class="section level3">
+<h3>point size</h3>
+<p>Size is another plot state that differs between <code>ggplot</code> and <code>loon</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ggp_states<span class="sc">$</span>size</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;size&quot;</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] 26.78116 26.78116 26.78116 26.78116 26.78116 26.78116 26.78116 26.78116</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] 26.78116 26.78116 26.78116 26.78116 26.78116</span></span></code></pre></div>
+<p>The point <code>size</code> in <code>loon</code> identifies the approximate <strong>area</strong> of the point symbol, so when transforming from <code>ggplot</code> to <code>loon</code>, the <code>size</code> parameter of the <code>ggplot</code> is transformed to an integer value in <code>loon</code> that tries to match the area of the point in <code>ggplot</code>.</p>
+</div>
+<div id="colours" class="section level3">
+<h3>colours</h3>
+<p>Comparing the plots, the points are slightly different <code>&quot;grey&quot;</code> in one plot than in the other.</p>
+<p>This is because the two plots have different values stored as their colour state:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ggp_states<span class="sc">$</span>colour</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [11] &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot; &quot;grey&quot;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;color&quot;</span>]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] &quot;#808080808080&quot;</span></span></code></pre></div>
+<p>First, there is a slight difference between what <code>R</code> regards as <code>&quot;grey&quot;</code> and what <code>Tcl</code> (used by <code>loon</code>) regards as <code>&quot;grey&quot;</code>. Several other <strong>named</strong> colours in <code>R</code> also differ slightly from those in <code>Tcl</code> and hence in <code>loon</code>. <code>R</code> colours whose name <strong>is the same</strong> as that in <code>Tcl</code> <strong>but whose colour is different</strong> are <strong>only</strong> the following: <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAHgCAMAAAB6sCJ3AAAAolBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZrYAgAAA/wA6AAA6ADo6Ojo6OpA6ZpA6ZrY6kLY6kNtmAABmADpmOgBmkJBmkLZmtrZmtttmtv+AAACAAICAgICQOgCQkGaQtpCQttuQ27aQ2/+gIPCwMGC2ZgC2kDq2tma225C22/+2//++vr7bkDrbtmbbtpDb2//b////tmb/25D/27b//7b//9v///8KhhFUAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAJ+0lEQVR4nO3dDXPjRgHHYSVwV1LenCu0Ae4ooYZrcUscnHz/r4Yl+SW+C1Pbf0nsep5npqniuXE069/Isr1rNc8QaP7fO0DdBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBExg/o8eb6h3HueXXbdH7xTXY/82Zjtr1lvH2+OJcQUNPcRfcjoEDlAbXlPL1v3jyEd/V4c3V/8KuAjjR4QD/eNM1v28fz8aum+eW32wdj+9vq9urDzfX3g/ypTUDPy+EC2uy9gI42dECL7rlg/YAu+2eFb/oHY/db97QTP969/RHobXpXm4C2ey+gow0c0PoxnXWPxnrj7cPTP5rrH9oHY/9bt/Xvwf5Y7+Dp5yx9QLu9F9DRBg5oN/L9RnuMaLf2v22fdoawCejqj/kBrQ/ok73nCAMHtGw2I99vrJ9dZu2Dsf9tfQ4UHy62uhh/bJrfDRXQbu8FdLTpj0ADB9Set8x+/t/+DEegcw1/DvT7h/981R5p/tc50NABrY9rA54D9XsvoKON8yps/7rr7uBV2N3z8AGt/8BgL+O3ey+go43zPlD7Ps9PB+8D/bR/H2jogNo60yexg/eBvvcUdjwfphIREBEBEREQEQERERCROgJqzjbkfdUxVhOrY1Caf53ptYD+cq46xmpidQyKgIpVx6AIqFh1DIqAilXHoAioWHUM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" width="60%" style="display: block; margin: auto;" /> (See <code>?tkcolors</code> in <code>loon</code> for more information.)</p>
+<p>Second, <code>loon</code> plot colour values are strings of <strong>twelve</strong> hexadecimal digits, as in <code>tk</code> (e.g., see <code>?tkcolors</code>); in contrast, the <code>ggplot</code> are either strings corresponding to the named <code>R</code> colours (see <code>?grDevices::colors</code> in <code>R</code>) or to <strong>six</strong> hexadecimal digits (two for each of the red, green, and blue components).</p>
+<p>Twelve hex digit colours are turned into six hex digits using the <code>loon</code> function <code>hex12to6()</code>. To convert the <code>R</code> named colours to six hex digits, the following function can be used.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tohex <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sapply</span>(x, <span class="cf">function</span>(xi) {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        crgb <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">col2rgb</span>(xi))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rgb</span>(crgb[<span class="dv">1</span>], crgb[<span class="dv">2</span>], crgb[<span class="dv">3</span>], <span class="at">maxColorValue =</span> <span class="dv">255</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    })}</span></code></pre></div>
+<p>So, comparing the two <code>&quot;grey&quot;</code> colours, the <code>ggplot</code> has the <code>R</code> hex colour <code>tohex(&quot;grey&quot;) =</code> #BEBEBE and the <code>loon</code> plot has <code>Tcl</code> hex colour (converted to hex 6) <code>hex12tohex6(lp[&quot;color&quot;][1]) =</code> #808080, which are clearly different RGB values.</p>
+</div>
+</div>
+<div id="effect-of-missing-data" class="section level2">
+<h2>effect of missing data</h2>
+<p>The <code>loon</code> plot does not include the missing data</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(ggp_states) <span class="sc">==</span> lp[<span class="st">&quot;n&quot;</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>ggp_states<span class="sc">$</span>y</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] 68 63 63 13 55 78 14 14 NA 28 NA 55 57 40 78</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;y&quot;</span>]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] 68 63 63 13 55 78 14 14 28 55 57 40 78</span></span></code></pre></div>
+<p>Note that, absent the missing <code>NA</code>s, the <strong>order</strong> of the points is identical.</p>
+<div id="on-linking-keys" class="section level3">
+<h3>on linking keys</h3>
+<p>Default linking keys in <code>loon</code> are from <code>&quot;0&quot;</code> to <code>&quot;n-1&quot;</code> where <code>&quot;n&quot;</code> is the number of rows in the original data set.<br />
+Here <code>nrow(data) =</code> 15. Note that this <code>&quot;n&quot;</code> is not the number of points actually plotted because <code>loon</code> drops the missing data, unlike <code>ggplot</code>.</p>
+<p>The linking keys reflect this missingness:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;linkingKey&quot;</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;0&quot;  &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;9&quot;  &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot;</span></span></code></pre></div>
+<p>which is missing <code>&quot;8&quot;</code> and <code>&quot;10&quot;</code>. Note also that <code>lp[&quot;n&quot;] =</code> 13 is the number of points plotted in the <code>loon</code> plot.</p>
+<p>Some care needs to be taken when dealing with linking, especially when there is missing data.</p>
+</div>
+<div id="for-more-information" class="section level3">
+<h3>for more information</h3>
+<p>See the vignette <a href="https://great-northern-diver.github.io/loon.ggplot/articles/linking.html">Linking</a> and the <code>loon</code> vignette <a href="https://great-northern-diver.github.io/loon/articles/logicalQueries.html">Logical Queries</a> for more information.</p>
+</div>
+</div>
+</div>
+<div id="loon-to-ggplot-transformation" class="section level1">
+<h1><code>loon</code> to <code>ggplot</code> transformation</h1>
+<p>A <code>ggplot</code> from the <code>loon</code> plot will not have access to the original information.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ggp_lp_1 <span class="ot">&lt;-</span> <span class="fu">loon.ggplot</span>(lp)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ggp_lp_1</span></code></pre></div>
+<p><img src="data:image/png;base64,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" width="40%" style="display: block; margin: auto;" /></p>
+<p>Note that, though a <code>ggplot</code>, the position of the title is now centred. This is because the objective of the transformation is to create a <code>ggplot</code> that looks as much like the original <code>loon</code> plot as possible.</p>
+<div id="the-ggplot-states" class="section level2">
+<h2>the <code>ggplot</code> states</h2>
+<p>To try to reflect the look of the <code>loon</code> plot, the states of the <code>ggplot</code> are <strong>different</strong> from those of the original <code>ggplot</code> <code>ggp</code>.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ggp_lp_1_states <span class="ot">&lt;-</span> <span class="fu">ggplot_build</span>(ggp_lp_1)<span class="sc">$</span>data[[<span class="dv">1</span>]]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ggp_lp_1_states</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     colour size  x  y PANEL group shape fill alpha stroke</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  #808080    5 19 68     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  #808080    5 19 63     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  #808080    5 25 63     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  #808080    5 62 13     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  #808080    5 34 55     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  #808080    5 58 78     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7  #808080    5 62 14     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8  #808080    5 40 14     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9  #808080    5 60 28     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 #808080    5 40 55     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 #808080    5 40 57     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 #808080    5 34 40     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 #808080    5 26 78     1     1    19   NA    NA    0.5</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>lp_ggp_lp_1 <span class="ot">&lt;-</span> <span class="fu">loon.ggplot</span>(ggp_lp_1)</span></code></pre></div>
+</div>
+<div id="after-interactive-changes" class="section level2">
+<h2>After interactive changes</h2>
+<p>Perform some interactive changes, including selecting some points</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>selection <span class="ot">&lt;-</span> lp[<span class="st">&quot;x&quot;</span>] <span class="sc">&gt;</span> <span class="dv">50</span> <span class="sc">&amp;</span>lp[<span class="st">&quot;y&quot;</span>] <span class="sc">&gt;</span> <span class="dv">13</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;selected&quot;</span>] <span class="ot">&lt;-</span> selection</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>colorMeRed <span class="ot">&lt;-</span> lp[<span class="st">&quot;x&quot;</span>] <span class="sc">==</span> <span class="dv">34</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;color&quot;</span>][colorMeRed] <span class="ot">&lt;-</span> <span class="st">&quot;red&quot;</span></span></code></pre></div>
+<div id="linking-keys-after-loon.ggplot" class="section level3">
+<h3>linking keys after <code>loon.ggplot()</code></h3>
+<p>Linking problems can arise whenever a <code>ggplot</code> constructed from a <code>loon</code> plot is then made interactive again.</p>
+<p>Suppose a <code>loon</code> plot, like <code>lp</code>, is turned into a <code>ggplot</code> (typically, after some interactive changes) via <code>loon.ggplot()</code>, and the resulting new <code>ggplot</code> is then itself turned into another interactive plot. The new interactive plot will not necessarily share the same linking information as the original.</p>
+<p>This is because the second interactive plot will have the default values of <code>linkingGroup</code>, <code>linkingKey</code> and linked display states; these values are lost in the transfer from the first interactive plot to the <code>ggplot</code>. That is,</p>
+<ul>
+<li><p>the <em>linking group</em> is not automatically carried over to the second interactive plot</p></li>
+<li><p>the <em>linked states</em> are not automatically carried over to the second interactive plot</p></li>
+<li><p>the default <em>linking keys</em> in the second interactive plot are <code>&quot;0&quot;</code>, …, <code>&quot;n-1&quot;</code> where <code>n</code> is the number of observations that were displayed in the first plot.</p>
+<p>So, provided the first interactive plot has the default linking keys (and was built with complete data; i.e., no data was missing at creation), then the linking keys will match.</p></li>
+</ul>
+<p>An <strong>important special case</strong> is when some observations were <strong>selected</strong> in the first interactive plot at the time the <code>ggplot</code> is created. In this case, the <strong>linking keys will typically not match.</strong></p>
+<p>For example,</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get a ggplot from the loon plot</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ggp_lp <span class="ot">&lt;-</span> <span class="fu">loon.ggplot</span>(lp)</span></code></pre></div>
+<p>The interactive <code>lp</code> and the new <code>ggplot</code> <code>ggp_lp</code> appear as follows. <img src="data:image/png;base64,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" width="80%" style="display: block; margin: auto;" /> The left plot, <code>lp</code>, is an interactive <code>loon</code> plot and the magenta points are selected. The right plot, <code>ggp_lp</code>, is a static <code>ggplot</code> which has no <code>selected</code> state and the magenta points are simply points having that colour (and appear as that in the <code>ggplot</code> legend).</p>
+<p>In an interactive plot, selected points are visually emphasized in two ways:</p>
+<ul>
+<li>their colour is changed to the highlight colour (here magenta), and</li>
+<li>the corresponding part of the display (here the points) are drawn <strong>on top</strong> of the rest of the display.</li>
+</ul>
+<p>When transferring that to a <code>ggplot</code>, the selected points appear with the highlight colour <strong>and</strong> the <strong>data order is changed</strong> in the <code>ggplot</code> so that they appear on top of all other points in the display. If, instead, the argument <code>selectedOnTop = FALSE</code> is given to <code>loon.ggplot()</code> call, then the order of points will not be changed in the <code>ggplot</code>. This is <strong>strongly recommended</strong> whenever the <code>ggplot</code> will later be turned into an interactive plot; this will allow the linking to match more easily with the original interactive plot.</p>
+<p>To see the effect of this (and of missing values) on linking, suppose an interactive plot is created from the <code>ggplot</code> <code>ggp_lp</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The loon plot from the resulting ggplot</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>lp_ggp_lp <span class="ot">&lt;-</span> <span class="fu">loon.ggplot</span>(ggp_lp)</span></code></pre></div>
+<p>Compare the linking keys of this plot with the original:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The original loon plot has linking keys</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;linkingKey&quot;</span>]</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;0&quot;  &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;9&quot;  &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># And the loon plot from the derived ggplot</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>lp_ggp_lp[<span class="st">&quot;linkingKey&quot;</span>]</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;0&quot;  &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;8&quot;  &quot;9&quot;  &quot;10&quot; &quot;11&quot; &quot;12&quot;</span></span></code></pre></div>
+<p>Clearly, these are not the same and will match observations correctly (<code>&quot;0&quot;</code> to <code>&quot;7&quot;</code>), some incorrectly (<code>&quot;9&quot;</code>, <code>&quot;11&quot;</code>, and <code>&quot;12&quot;</code>), and some not at all (<code>&quot;8&quot;</code>, <code>&quot;13&quot;</code>, and <code>&quot;14&quot;</code>).</p>
+<p>The difference is that <code>lp</code> was created with data missing values corresponding to the missing linking keys <code>&quot;8&quot;</code> and <code>&quot;10&quot;</code>. This information was not available on the <code>ggplot</code> <code>ggp_lp</code> so that the new <code>loon</code> plot would be created with the default values <code>&quot;0&quot;</code> to <code>&quot;12&quot;</code>. The result is that some points will be wrongly linked between <code>lp</code> and <code>lp_ggp_lp</code>.</p>
+<p>The selected points in <code>lp</code> (highlighted magenta) will cause reordering in <code>ggp_lp</code> and hence in <code>lp_ggp_lp</code>. This too will cause problems in linking and other states of the new <code>lp_ggp_lp</code>. For example, the two point orders can be seen in the respective values of their <code>&quot;x&quot;</code>:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The original point order</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;x&quot;</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] 19 19 25 62 34 58 62 40 60 40 40 34 26</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The new plot&#39;s order</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>lp_ggp_lp[<span class="st">&quot;x&quot;</span>]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] 19 19 25 62 34 40 40 40 34 26 58 62 60</span></span></code></pre></div>
+<p>This makes problems for matching the correct observations.</p>
+<p>Other states are also changed because of the transition from <code>loon</code> plot to <code>ggplot</code> to <code>loon</code> plot. In particular, the <code>&quot;color&quot;</code> and <code>&quot;selected&quot;</code> states will not match.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Original selected</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;selected&quot;</span>]</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] FALSE</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># the new plot has nothing selected</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>lp_ggp_lp[<span class="st">&quot;selected&quot;</span>]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] FALSE</span></span></code></pre></div>
+<p>This is for two reasons. First the selected points of <code>lp</code> changed to colour in <code>ggp_lp</code> and so the selected points from <code>lp</code> could not be transferred to <code>lp_ggp_lp</code>. The colours in <code>lp_ggp_lp</code> will not match those of. Second, the new plot has not (yet) joined the same linking group as the original.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Original selected</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;color&quot;</span>]</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;#FFFF00000000&quot; &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#FFFF00000000&quot;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] &quot;#808080808080&quot;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the new plot has nothing selected</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>lp_ggp_lp[<span class="st">&quot;color&quot;</span>]</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;#FFFF00000000&quot; &quot;#808080808080&quot; &quot;#808080808080&quot; &quot;#808080808080&quot;</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;#FFFF00000000&quot; &quot;#808080808080&quot; &quot;#FFFF0000FFFF&quot; &quot;#FFFF0000FFFF&quot;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] &quot;#FFFF0000FFFF&quot;</span></span></code></pre></div>
+<p>When observations are also <strong>highlighted</strong> in the original <code>loon</code> plot, as in <code>lp</code>, a little more care needs to be taken with respect to the linking keys. The problem is that in constructing the <code>ggplot</code>, the data has to be reordered to ensure that the selected highlighted points appear on top of the other points in the <code>ggplot</code>.</p>
+<p>Care needs to be taken to manage the linking keys when moving from the static <code>ggplot</code> to the interactive <code>loon</code> plot. This information can be added when the interactive plot is created, as arguments to <code>loon.ggplot()</code> as follows.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the linking information when creating the interactive plot</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>lp_ggp_l1_lk <span class="ot">&lt;-</span> <span class="fu">loon.ggplot</span>(ggp_lp, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">linkingKey =</span>lp[<span class="st">&quot;linkingKey&quot;</span>], </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">linkingGroup =</span> <span class="st">&quot;NA example&quot;</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Now compare</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>lp_ggp_l1_lk[<span class="st">&quot;linkingKey&quot;</span>]</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;0&quot;  &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;9&quot;  &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co"># to the original loon plot</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;linkingKey&quot;</span>]</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;0&quot;  &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;9&quot;  &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot;</span></span></code></pre></div>
+<p>Alternatively, the grammar could have been used as in</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the linking information when creating the interactive plot</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>lp_ggp_l1_ggk <span class="ot">&lt;-</span> <span class="fu">loon.ggplot</span>(ggp_lp <span class="sc">+</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">linking</span>(<span class="at">linkingGroup =</span> <span class="st">&quot;NA example&quot;</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">linkingKey =</span>lp[<span class="st">&quot;linkingKey&quot;</span>]))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Again compare</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>lp_ggp_l1_ggk[<span class="st">&quot;linkingKey&quot;</span>]</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;0&quot;  &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;9&quot;  &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot;</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># to the original loon plot</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>lp[<span class="st">&quot;linkingKey&quot;</span>]</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;0&quot;  &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;9&quot;  &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot;</span></span></code></pre></div>
+<p>Of course, all this depends on the user knowing where to find the correct linking information.</p>
+<p>Comparing the three different interactive plots shows how information can be lost, as well as how it can be maintained, when translating from interactive to static <code>ggplot</code> back to an interactive <code>loon</code> plot.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

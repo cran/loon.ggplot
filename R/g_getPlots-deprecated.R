@@ -10,13 +10,15 @@
 #' @seealso \code{\link{l_getPlots}}, \code{\link{g_getLocations}}
 #'
 #' @export
-g_getPlots <- function(target, asAes = TRUE, selectedOnTop = TRUE) {
+g_getPlots <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                       showNearestColor = FALSE) {
   UseMethod('g_getPlots', target)
 }
 
 #' @export
 #' @rdname g_getPlots
-g_getPlots.default <- function(target, asAes = TRUE, selectedOnTop = TRUE) {
+g_getPlots.default <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                               showNearestColor = FALSE) {
 
   # locations
   locations <- g_getLocations(target)
@@ -29,13 +31,14 @@ g_getPlots.default <- function(target, asAes = TRUE, selectedOnTop = TRUE) {
     lapply(seq(length(target)),
            function(i) {
              loon2ggplot(target[[i]], asAes = asAes,
-                         selectedOnTop = selectedOnTop)
+                         selectedOnTop = selectedOnTop,
+                         showNearestColor = showNearestColor)
            })
   )
 
   layout_matrix <- as.vector(layout_matrix)
 
-  plots <- lapply(1:(nrow * ncol),
+  plots <- lapply(seq(nrow * ncol),
                   function(i) {
                     plot_id <- layout_matrix[i]
                     if(is.na(plot_id)) {
@@ -51,7 +54,8 @@ g_getPlots.default <- function(target, asAes = TRUE, selectedOnTop = TRUE) {
 
 #' @export
 #' @rdname g_getPlots
-g_getPlots.l_pairs <- function(target, asAes = TRUE, selectedOnTop = TRUE) {
+g_getPlots.l_pairs <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                               showNearestColor = FALSE) {
 
   # locations
   locations <- g_getLocations(target)
@@ -61,14 +65,15 @@ g_getPlots.l_pairs <- function(target, asAes = TRUE, selectedOnTop = TRUE) {
 
   # plots
   ggplots <- suppressMessages(
-    lapply(1:length(target),
+    lapply(seq(length(target)),
            function(i) {
              loon2ggplot(target[[i]], asAes = asAes,
-                         selectedOnTop = selectedOnTop)
+                         selectedOnTop = selectedOnTop,
+                         showNearestColor = showNearestColor)
            })
   )
 
-  wrap_paris_plots(
+  wrap_pairs_plots(
     ggplots = ggplots,
     layout_matrix = layout_matrix,
     nrow = nrow,
@@ -77,11 +82,12 @@ g_getPlots.l_pairs <- function(target, asAes = TRUE, selectedOnTop = TRUE) {
   )
 }
 
-wrap_paris_plots <- function(ggplots,
+wrap_pairs_plots <- function(ggplots,
                              layout_matrix,
                              nrow = NULL,
                              ncol = NULL,
-                             texts = NULL) {
+                             texts = NULL,
+                             default_text_size = 3) {
 
   stopifnot(
     exprs = {
@@ -91,7 +97,7 @@ wrap_paris_plots <- function(ggplots,
     }
   )
 
-  default_text_size <- 3
+
   if(is.na(layout_matrix[1,ncol])) {
     showHistOnEdge <- TRUE
     showHistOnDiag <- FALSE
@@ -109,7 +115,7 @@ wrap_paris_plots <- function(ggplots,
   ncol <- ncol %||% dim(layout_matrix)[2]
   layout_matrix <- as.vector(layout_matrix)
 
-  plots <- lapply(1:(nrow * ncol),
+  plots <- lapply(seq(nrow * ncol),
                   function(i) {
                     plot_id <- layout_matrix[i]
 

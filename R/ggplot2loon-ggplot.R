@@ -27,10 +27,10 @@
 #'
 #'
 #' @import ggplot2 tcltk loon methods grid rlang
-#' @importFrom stats quantile approxfun integrate setNames na.omit
+#' @importFrom stats quantile approxfun integrate setNames na.omit runif
 #' @importFrom grDevices extendrange rgb as.raster col2rgb
 #' @importFrom gridExtra arrangeGrob tableGrob
-#' @importFrom GGally ggmatrix
+#' @import patchwork
 #'
 #' @export
 #' @examples
@@ -78,8 +78,10 @@
 #' # Here the colour points and grey points are both linked
 #'
 #' ########### ggmatrix to loon ###########
+#' if(requireNamespace("GGally")) {
 #' pm <- GGally::ggpairs(iris, column = 1:4, ggplot2::aes(colour=Species))
 #' lg <- ggplot2loon(pm)
+#' }
 #' }
 #'
 #'
@@ -142,7 +144,7 @@ ggplot2loon.ggplot <- function(ggObj, ..., activeGeomLayers = integer(0),
     } else {
       if(layerId > length(ggObj$layers)) {
         layerId <- 0L
-        warning("The ggplot object has ", length(ggObj$layers), " layers, ",
+        warning("The `ggplot` object has ", length(ggObj$layers), " layers, ",
                 "however, the `layerId` is set as ", layerId,
                 " which is greater than ", length(ggObj$layers),
                 call. = FALSE)

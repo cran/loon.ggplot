@@ -11,7 +11,11 @@
 #' See details
 #' @param selectedOnTop logical and default is \code{TRUE}; whether to display the
 #' selected points on top. See details.
-#'
+#' @param showNearestColor logical and default is \code{FALSE}; if \code{TRUE},
+#' the legend of color and fill (hex code) would be converted to the \code{R} built-in
+#' color names. For some hex codes, there are no precise matching.
+#' Consequently, these colors will be converted to the \code{R} built-in color names
+#' which are the "nearest" of these hex codes.
 #' @param ... arguments used inside \code{loon2ggplot()}, not used by this method
 #'
 #' @return a \code{ggplot} object
@@ -88,7 +92,8 @@
 #' loon.ggplot(p, selectedOnTop = FALSE) +
 #'   facet_wrap(iris$Species)
 #' }
-loon2ggplot <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                        showNearestColor = FALSE, ...) {
 
   if(ggplot2::is.ggplot(target) || is.ggmatrix(target)) {
     error_info <- deparse(substitute(target))
@@ -105,7 +110,8 @@ loon2ggplot <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
 
 #' @export
 #' @rdname loon2ggplot
-loon2ggplot.default <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.default <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                showNearestColor = FALSE, ...) {
   # TODO
   ggObj <- list(...)$ggObj
   ggObj
@@ -113,49 +119,59 @@ loon2ggplot.default <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...)
 
 #' @rdname loon2ggplot
 #' @export
-loon2ggplot.l_plot <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_plot <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                               showNearestColor = FALSE, ...) {
 
   loon::l_isLoonWidget(target) || stop("target does not exist", call. = FALSE)
   rl <- loon::l_create_handle(c(target, 'root'))
   cartesian_gg(target = target,
                ggObj = loon2ggplot(rl,
                                    asAes = asAes,
-                                   selectedOnTop = selectedOnTop))
+                                   selectedOnTop = selectedOnTop,
+                                   showNearestColor = showNearestColor))
 }
 
 #' @rdname loon2ggplot
 #' @export
-loon2ggplot.l_hist <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_hist <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                               showNearestColor = FALSE, ...) {
 
   loon::l_isLoonWidget(target) || stop("target does not seem to exist", call. = FALSE)
   rl <- loon::l_create_handle(c(target, 'root'))
 
-  if(target['yshows'] == "density" && length(unique(target['color'])) > 1) {
-    setLimits <- FALSE
-    message("In ggplot histogram, if `y` shows density, ",
-            "the area of each category (grouped by color) is 1; ",
-            "however, for an `l_hist` widget, ",
-            "the whole area is one and the area of each category is proportional to its counts.")
-  } else
-    setLimits <- TRUE
+  setLimits <- TRUE
+  if(target['yshows'] == "density") {
+    if(length(unique(target['color'])) > 1 || length(unique(target['selected'])) > 1) {
+      setLimits <- FALSE
+      message("In `ggplot` histogram, if `y` shows density, ",
+              "the area of each category (grouped by color) is 1; ",
+              "however, for an `l_hist` widget, ",
+              "the whole area is one and the area of each category is proportional to its counts.")
+    }
+  }
 
   cartesian_gg(target = target,
-               ggObj = loon2ggplot(rl, asAes = asAes, selectedOnTop = selectedOnTop),
+               ggObj = loon2ggplot(rl, asAes = asAes,
+                                   selectedOnTop = selectedOnTop,
+                                   showNearestColor = showNearestColor),
                setLimits = setLimits)
 }
 
 #' @export
-loon2ggplot.l_graph <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_graph <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                showNearestColor = FALSE, ...) {
 
   loon::l_isLoonWidget(target) || stop("target does not seem to exist", call. = FALSE)
   rl <- loon::l_create_handle(c(target, 'root'))
   cartesian_gg(target = target,
-               ggObj = loon2ggplot(rl, asAes = asAes, selectedOnTop = selectedOnTop))
+               ggObj = loon2ggplot(rl, asAes = asAes, selectedOnTop = selectedOnTop,
+                                   showNearestColor = showNearestColor))
 }
 
 #' @rdname loon2ggplot
 #' @export
-loon2ggplot.l_plot3D <- function(target,  asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_plot3D <- function(target,  asAes = TRUE, selectedOnTop = TRUE,
+                                 showNearestColor = FALSE, ...) {
 
   loon::l_isLoonWidget(target) || stop("target does not seem to exist", call. = FALSE)
   rl <- loon::l_create_handle(c(target, 'root'))
@@ -181,7 +197,8 @@ loon2ggplot.l_plot3D <- function(target,  asAes = TRUE, selectedOnTop = TRUE, ..
   y <- c(0.5, 0.5 + 0.08*axes_coords[[2]][1])
 
   cartesian_gg(target = target,
-               ggObj = loon2ggplot(rl, asAes = asAes, selectedOnTop = selectedOnTop)) +
+               ggObj = loon2ggplot(rl, asAes = asAes, selectedOnTop = selectedOnTop,
+                                   showNearestColor = showNearestColor)) +
     ggplot2::geom_line(
       data = data.frame(
         x = x,
@@ -253,7 +270,7 @@ cartesian_gg <- function(target, ggObj, setLimits = TRUE) {
     margins <- apply(cbind(margins, minimumMargins), 1, max)
   }
   # loon pixel margin to grid margin
-  margins <- pixels_2_lines(margins)
+  margins <- round(margins/100, 2)
 
   xlabelFont <- get_font_info_from_tk(loon::l_getOption("font-xlabel"))
   ylabelFont <- get_font_info_from_tk(loon::l_getOption("font-ylabel"))
@@ -282,21 +299,27 @@ cartesian_gg <- function(target, ggObj, setLimits = TRUE) {
       panel.grid.minor = ggplot2::element_line(size = 0.5,
                                                linetype = 'solid',
                                                colour = as_hex6color(widget['guidelines'])),
-      panel.border = if(sum(margins, na.rm = TRUE) > 0)
+      panel.border = if(sum(margins, na.rm = TRUE) > 0) {
         ggplot2::element_rect(colour = as_hex6color(widget['foreground']),
                               fill = NA,
-                              size = 1) else ggplot2::element_blank(),
+                              size = 0.5)
+      } else {
+        ggplot2::element_blank()
+      },
       plot.margin = grid::unit(margins, "lines")
     )
 
   if(setLimits) {
-    ggObj <- ggObj +
-      ggplot2::coord_cartesian(xlim = xlim, ylim = ylim,
-                               expand = FALSE)
 
-    if(swapAxes) ggObj <- ggObj +
+    if(swapAxes) {
+      ggObj <- ggObj +
         ggplot2::coord_flip(xlim = xlim, ylim = ylim,
                             expand = FALSE)
+    } else {
+      ggObj <- ggObj +
+        ggplot2::coord_cartesian(xlim = xlim, ylim = ylim,
+                                 expand = FALSE)
+    }
 
   } else {
     if(swapAxes) ggObj <- ggObj +
@@ -307,12 +330,14 @@ cartesian_gg <- function(target, ggObj, setLimits = TRUE) {
 }
 
 #' @export
-loon2ggplot.l_layer_group <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_group <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                      showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   ggObj <- ggplot2::ggplot()
 
   children <- l_layer_getUngroupedChildren(widget = widget, target = widget)
+
   l_children_layers <- lapply(
     rev(children),
     function(layerid) {
@@ -321,37 +346,44 @@ loon2ggplot.l_layer_group <- function(target, asAes = TRUE, selectedOnTop = TRUE
 
       if(layerid == 'model') {
 
-        states <- get_layer_states(widget, native_unit = FALSE)
+        x <- widget['x']
+        if(length(x) > 0) {
 
-        if(length(states$x) > 0) {
+          ndimNames <- loon::l_nDimStateNames(widget)
+          # N dim names
+          data <- as.data.frame(
+            remove_null(
+              stats::setNames(
+                lapply(ndimNames,
+                       function(s) {
+                         if(s == "color") {
+                           l_colorName(widget[s], error = FALSE,
+                                       precise = !showNearestColor)
+                         } else if (s == "size") {
+                           as.numeric(widget[s])
+                         } else {
+                           state <- widget[s]
+                           if(length(state) == 0) return(NULL)
+                           state
+                         }
+                       }),
+                ndimNames
+              ), as_list = FALSE)
+          )
+
+          if(selectedOnTop) {
+            displayOrder <- suppressWarnings(get_model_display_order(widget))
+            data <- data[displayOrder, ]
+          }
 
           if(inherits(widget, "l_hist")) {
+
             # histogram
-            ggObj <<- ggplot2::ggplot(data = data.frame(x = states$x,
-                                                        color = l_colorName(states$color, error = FALSE),
-                                                        selected = states$selected,
-                                                        active = states$active),
+            ggObj <<- ggplot2::ggplot(data = data,
                                       mapping = ggplot2::aes(x = x))
 
           } else {
-
-            # scatter plot
-            swapAxes <- widget["swapAxes"]
-            if(swapAxes) {
-              y <- states$x
-              x <- states$y
-            } else {
-              x <- states$x
-              y <- states$y
-            }
-
-            ggObj <<- ggplot2::ggplot(data = data.frame(x = x,
-                                                        y = y,
-                                                        glyph = states$glyph,
-                                                        size = states$size,
-                                                        color = l_colorName(states$color, error = FALSE),
-                                                        selected = states$selected,
-                                                        active = states$active),
+            ggObj <<- ggplot2::ggplot(data = data,
                                       mapping = ggplot2::aes(x = x,
                                                              y = y))
           }
@@ -370,7 +402,9 @@ loon2ggplot.l_layer_group <- function(target, asAes = TRUE, selectedOnTop = TRUE
          function(layer) {
 
            ggObj <<- loon2ggplot(layer, asAes = asAes,
-                                 selectedOnTop = selectedOnTop, ggObj = ggObj)
+                                 selectedOnTop = selectedOnTop,
+                                 showNearestColor = showNearestColor,
+                                 ggObj = ggObj)
          })
 
   ggObj
@@ -378,7 +412,8 @@ loon2ggplot.l_layer_group <- function(target, asAes = TRUE, selectedOnTop = TRUE
 
 # primitive ggplot layers
 #' @export
-loon2ggplot.l_layer_polygon <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_polygon <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                        showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -399,7 +434,7 @@ loon2ggplot.l_layer_polygon <- function(target, asAes = TRUE, selectedOnTop = TR
         mapping = ggplot2::aes(x = x, y = y),
         fill = states$color,
         colour = states$linecolor,
-        size =  as_r_line_size(states$linewidth)
+        size =  as_ggplot_size(states$linewidth, "lines")
       )
   }
 
@@ -407,7 +442,8 @@ loon2ggplot.l_layer_polygon <- function(target, asAes = TRUE, selectedOnTop = TR
 }
 
 #' @export
-loon2ggplot.l_layer_line <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_line <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                     showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -428,7 +464,7 @@ loon2ggplot.l_layer_line <- function(target, asAes = TRUE, selectedOnTop = TRUE,
         ),
         mapping = ggplot2::aes(x = x, y = y),
         colour = states$color,
-        size = as_r_line_size(states$linewidth)
+        size = as_ggplot_size(states$linewidth, "lines")
       )
   }
 
@@ -436,7 +472,8 @@ loon2ggplot.l_layer_line <- function(target, asAes = TRUE, selectedOnTop = TRUE,
 }
 
 #' @export
-loon2ggplot.l_layer_rectangle <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_rectangle <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                          showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -459,14 +496,15 @@ loon2ggplot.l_layer_rectangle <- function(target, asAes = TRUE, selectedOnTop = 
                                ymin = y[1], ymax = y[2]),
         colour = states$linecolor,
         fill = states$color,
-        size =  as_r_line_size(states$linewidth)
+        size =  as_ggplot_size(states$linewidth, "lines")
       )
   }
 
   ggObj
 }
 #' @export
-loon2ggplot.l_layer_oval <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_oval <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                     showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -499,14 +537,15 @@ loon2ggplot.l_layer_oval <- function(target, asAes = TRUE, selectedOnTop = TRUE,
         mapping = ggplot2::aes(x = x, y = y),
         fill = states$color,
         colour = states$linecolor,
-        size = as_r_line_size(states$linewidth)
+        size = as_ggplot_size(states$linewidth, "lines")
       )
   }
 
   ggObj
 }
 #' @export
-loon2ggplot.l_layer_text <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_text <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                     showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -539,7 +578,8 @@ loon2ggplot.l_layer_text <- function(target, asAes = TRUE, selectedOnTop = TRUE,
   ggObj
 }
 #' @export
-loon2ggplot.l_layer_texts <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_texts <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                      showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -592,7 +632,8 @@ loon2ggplot.l_layer_texts <- function(target, asAes = TRUE, selectedOnTop = TRUE
   ggObj
 }
 #' @export
-loon2ggplot.l_layer_points <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_points <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                       showNearestColor = FALSE, ...) {
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
   states <- get_layer_states(target, native_unit = FALSE)
@@ -611,14 +652,15 @@ loon2ggplot.l_layer_points <- function(target, asAes = TRUE, selectedOnTop = TRU
         mapping = ggplot2::aes(x = x, y = y),
         colour =  states$color[active],
         size = as_ggplot_size(states$size[active]),
-        pch = 16
+        pch = 19
       )
   }
 
   ggObj
 }
 #' @export
-loon2ggplot.l_layer_polygons <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_polygons <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                         showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -632,7 +674,7 @@ loon2ggplot.l_layer_polygons <- function(target, asAes = TRUE, selectedOnTop = T
 
   if(length(x) > 0  & length(y) > 0){
 
-    linewidth  <- as_r_line_size(states$linewidth[active])
+    linewidth  <- as_ggplot_size(states$linewidth[active], "lines")
     linecolor <- states$linecolor[active]
     fill <- states$color[active]
 
@@ -658,7 +700,8 @@ loon2ggplot.l_layer_polygons <- function(target, asAes = TRUE, selectedOnTop = T
   ggObj
 }
 #' @export
-loon2ggplot.l_layer_rectangles <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_rectangles <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                           showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -691,14 +734,15 @@ loon2ggplot.l_layer_rectangles <- function(target, asAes = TRUE, selectedOnTop =
                                ymin = ymin, ymax = ymax),
         fill = states$color[active],
         colour = states$linecolor[active],
-        size = as_r_line_size(states$linewidth[active])
+        size = as_ggplot_size(states$linewidth[active], "lines")
       )
   }
 
   ggObj
 }
 #' @export
-loon2ggplot.l_layer_lines <- function(target, asAes = TRUE, selectedOnTop = TRUE, ...) {
+loon2ggplot.l_layer_lines <- function(target, asAes = TRUE, selectedOnTop = TRUE,
+                                      showNearestColor = FALSE, ...) {
 
   widget <- l_create_handle(attr(target, "widget"))
   swapAxes <- widget["swapAxes"]
@@ -712,7 +756,7 @@ loon2ggplot.l_layer_lines <- function(target, asAes = TRUE, selectedOnTop = TRUE
 
   if(length(x) > 0  & length(y) > 0){
 
-    linewidth  <- as_r_line_size(states$linewidth[active])
+    linewidth  <- as_ggplot_size(states$linewidth[active], "lines")
     linecolor <- states$color[active]
 
     len_x <- lengths(x)
