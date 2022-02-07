@@ -19,6 +19,7 @@ library(ggplot2, quietly = TRUE)
 library(dplyr, quietly = TRUE)
 library(magrittr, quietly = TRUE)
 library(loon, quietly = TRUE)
+library(patchwork, quietly = TRUE)
 
 ## ----mpg_vs_wt, message = FALSE, warning = FALSE------------------------------
 p1 <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
@@ -296,4 +297,39 @@ include_graphics(file.path(imageDirectory, "l_fwrap.png"))
 #  #     [,1] [,2]
 #  # [1,]    1    2
 #  # [2,]    3    4
+
+## ----patchwork, message = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
+library(patchwork)
+p1 <- ggplot(mtcars) + geom_point(aes(mpg, disp))
+p2 <- ggplot(mtcars) + geom_boxplot(aes(gear, disp, group = gear))
+patchwork <- p1 + p2 # two plots are placed side by side
+patchwork
+
+## ----patchwork to loon, message = FALSE, eval = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
+#  l_patchwork <- ggplot2loon(patchwork)
+#  class(l_patchwork)
+#  # [1] "l_patchwork"   "l_compound" "loon"
+
+## ----patchwork linkingGroup, eval = FALSE, message = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
+#  ggplot2loon(patchwork, linkingGroup = "none") # un-linked
+#  ggplot2loon(patchwork, linkingGroup = "Motor Trend 1974") # join another group
+
+## ----patchwork complex design, message = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
+p3 <- ggplot(mtcars) + geom_smooth(aes(disp, qsec))
+pp <- (p1 | p2) / p3
+pp
+
+## ----patchwork fail, eval = FALSE, message = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
+#  # ERROR
+#  ggplot2loon(pp)
+
+## ----patchwork success, eval = FALSE, message = FALSE, warning = FALSE, fig.width = 5, fig.height = 4, fig.align = "center", out.width = "70%"----
+#  design <- c(
+#    area(1,1),
+#    area(1,2),
+#    area(2,1,2,2)
+#  )
+#  pp <- p1 + p2 + p3 + plot_layout(design = design)
+#  # Success!
+#  ggplot2loon(pp)
 
