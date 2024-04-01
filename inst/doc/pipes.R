@@ -101,7 +101,7 @@ p1_piped
 #    ggtitle("Gas usage")
 #  obj
 
-## ---- l_getFromPath, message = FALSE, eval = FALSE----------------------------
+## ----l_getFromPath, message = FALSE, eval = FALSE-----------------------------
 #  if(utils::packageVersion("loon") >= "1.2.4") {
 #    # **THIS IS IMPORTANT**
 #    # The path name can be obtained at the top left tk window

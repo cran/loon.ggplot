@@ -148,7 +148,7 @@ lp3_stringKeys <- loon.ggplot(ggp3_stringKeys)
 colorMeBlue <- lp1_stringKeys["x"] < 50 
 lp1_stringKeys["color"][colorMeBlue] <- "blue"
 
-## ---- fig.width = 12, fig.height = 8, out.width = "100%"----------------------
+## ----fig.width = 12, fig.height = 8, out.width = "100%"-----------------------
 grid.arrange(plot(lp1, draw = FALSE), 
              plot(lp2, draw = FALSE), 
              plot(lp3, draw = FALSE), 
@@ -166,12 +166,12 @@ length(intersect(lp1["linkingKey"], lp2["linkingKey"]))
 length(intersect(lp1_stringKeys["linkingKey"], lp2_stringKeys["linkingKey"]))
 length(intersect(lp1["linkingKey"], lp1_stringKeys["linkingKey"]))
 
-## ---- eval= FALSE-------------------------------------------------------------
+## ----eval= FALSE--------------------------------------------------------------
 #  # Get a ggplot from the loon plot, make sure the selected points
 #  # do not change the order of the
 #  ggp_lp1 <- loon.ggplot(lp1, selectedOnTop = FALSE)
 
-## ---- eval= FALSE-------------------------------------------------------------
+## ----eval= FALSE--------------------------------------------------------------
 #  lp_ggp_l1_lk <- loon.ggplot(ggp_lp1,
 #                              linkingKey = lp1["linkingKey"],
 #                              linkingGroup = "NA example")
